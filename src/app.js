@@ -7,9 +7,8 @@ const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const tableName = process.env.TABLE;
 
-let app = {};
 
-app.get = (id, sortKey) => {
+function get(id, sortKey) {
     let params = {
         TableName: tableName,
         Key: {
@@ -26,7 +25,7 @@ app.get = (id, sortKey) => {
         })
 };
 
-app.post = (item) => {
+function post(item){
 
     const params = {
         TableName: tableName,
@@ -44,7 +43,7 @@ app.post = (item) => {
 };
 
 
-app.delete = (id, sortKey) => {
+function remove(id, sortKey){
 
     let params = {
         TableName: tableName,
@@ -62,5 +61,9 @@ app.delete = (id, sortKey) => {
         })
 };
 
-module.exports = app;
 
+module.exports = {
+    get: get,
+    post: post,
+    remove: remove
+};

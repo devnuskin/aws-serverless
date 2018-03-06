@@ -1,7 +1,7 @@
 'use strict';
 
 const app = require('./app');
-const cors = require("./ns-response");
+const corsHandler = require("cors-handler");
 
 /**
  * handler is a Lambda function.  The AWS Lambda service will invoke this function when a given event and runtime.
@@ -12,7 +12,7 @@ const cors = require("./ns-response");
  * @param {Object} context a runtime information is passed by AWS Lambda service
  * @param {callback} callback a callback function
  */
-module.exports.handler = cors((event, context, callback) => {
+function handler(event, context, callback) {
 
     const done = (err, res) => callback(null, {
         statusCode: err ? '400' : '200',
@@ -40,7 +40,7 @@ module.exports.handler = cors((event, context, callback) => {
                     .catch((err) => { done({"message": err}, null)});
                 break;
             case 'DELETE':
-                app.delete(id, sortKey)
+                app.remove(id, sortKey)
                     .then((skus) => { done(null, data)})
                     .catch((err) => { done({"message": err}, null)});
                 break;
@@ -50,4 +50,9 @@ module.exports.handler = cors((event, context, callback) => {
     } else {
         done(new Error(`Invalid Event "${event}"`));
     }
-});
+}
+
+
+module.exports = {
+    handler: corsHandler.cors(handler)
+};

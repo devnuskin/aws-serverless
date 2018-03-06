@@ -4,7 +4,8 @@
     "version": "0.0.1",
     "private": true,
     "dependencies": {
-        "aws-xray-sdk": "^1.2.0"
+        "aws-xray-sdk": "^1.2.0",
+        "cors-handler": "0.0.1"
     },
     "devDependencies": {
         "aws-sdk": "^2.205.0",
