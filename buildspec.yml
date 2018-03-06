@@ -1,0 +1,13 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - npm install
+      - npm install -g mocha
+      - npm install -g serverless
+  build:
+    commands:
+      - AWS_ACCESS_KEY_ID=$AKID AWS_SECRET_ACCESS_KEY=$AKS serverless deploy --verbose --stage $STAGE --region $REGION
+       
+

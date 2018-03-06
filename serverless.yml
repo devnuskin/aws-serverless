@@ -1,0 +1,69 @@
+service: Favorites
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  region: ${env:REGION, 'us-west-2'}
+  stage: ${opt:stage, 'dev'}
+  envir:  ${env:DEP_ENVIRONMENT, 'dev'}
+  tracing: true
+  environment:
+    AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
+
+  deploymentBucket:
+    name: ${self:provider.envir}-${self:provider.region}-nuskin-sls
+    # serverSideEncryption: AES256 # when using server-side encryption
+  iamRoleStatements: # permissions for all of your functions can be set here
+    - Effect: Allow
+      Action: # Gives permission to DynamoDB tables in a specific region
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:us-west-2:*:*"
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+
+
+functions:
+  favorites:
+    environment:
+      TABLE: 'Items'
+    handler: src/index.handler
+    events:
+     - http:
+        path: item/{id}
+        method: get
+        cors: true
+        request:
+          parameters:
+            paths:
+              id: true
+     - http:
+        path: item
+        method: post
+        cors: true
+     - http:
+        path: item/{id}
+        method: delete
+        cors: true
+        request:
+          parameters:
+            paths:
+              userId: true
+
+plugins:
+  - serverless-offline
+  - serverless-plugin-tracing
+
+
+
+
+
