@@ -1,4 +1,4 @@
-service: Favorites
+service: Item
 
 provider:
   name: aws
@@ -10,8 +10,8 @@ provider:
   environment:
     AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
 
-  deploymentBucket:
-    name: ${self:provider.envir}-${self:provider.region}-nuskin-sls
+ # deploymentBucket:
+ #   name: ${self:provider.envir}-${self:provider.region}-nuskin-sls
     # serverSideEncryption: AES256 # when using server-side encryption
   iamRoleStatements: # permissions for all of your functions can be set here
     - Effect: Allow
@@ -33,7 +33,7 @@ provider:
 
 
 functions:
-  favorites:
+  Item:
     environment:
       TABLE: 'Items'
     handler: src/index.handler
@@ -59,9 +59,16 @@ functions:
             paths:
               userId: true
 
+custom:
+  customDomain:
+    domainName: 'api.nuskin.io' # Change this to your domain.
+    basePath: 'item' # This will be prefixed to all routes
+    stage: ${self:provider.stage}
+
 plugins:
   - serverless-offline
   - serverless-plugin-tracing
+  - serverless-domain-manager
 
 
 
