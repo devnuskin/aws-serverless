@@ -66,10 +66,31 @@ custom:
     basePath: 'Item' # This will be prefixed to all routes
     stage: ${self:provider.stage}
 
+custom:
+  stage: ${opt:stage, self:provider.stage}
+  domains:
+    prod: api.cloud.nuskin.com
+    stage: stageapi.cloud.nuskin.com
+    test: testapi.cloud.nuskin.com
+    dev: devapi.cloud.nuskin.com
+
+  customDomain:
+    basePath: 'favorites'
+    domainName: ${self:custom.domains.${self:custom.stage}}
+    stage: '${self:custom.stage}'
+    certificateName: '*.cloud.nuskin.com'
+    endpointType: 'regional'
+    createRoute53Record: false
+ #  domainName: 'api.nuskin.io' # Change this to your domain.
+ #  basePath: 'Item' # This will be prefixed to all routes
+ #  stage: ${self:provider.stage}
+
+
 plugins:
   - serverless-offline
   - serverless-plugin-tracing
   - serverless-domain-manager
+  - serverless-aws-alias
 
 
 
