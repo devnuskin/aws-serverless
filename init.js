@@ -9,7 +9,7 @@ firstline("./serverless.yml").then(
         replace({
             regex: "ItemService",
             replacement: serviceName,
-            paths: ['./serverless.yml', './package.json', './package-lock.json'],
+            paths: ['./serverless.yml', './package.json', './package-lock.json', './src/resources/MicroService Collection.postman_collection.json'],
             recursive: true,
             silent: true,
         });

@@ -29,7 +29,6 @@ function post(item){
 
     const params = {
         TableName: tableName,
-        ReturnValues: 'ALL',
         Item: item
     };
 

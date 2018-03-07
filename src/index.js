@@ -22,25 +22,20 @@ function handler(event, context, callback) {
         },
     });
 
-    let sortKey = event.queryStringParameters.sortKey;
-    let id = event.pathParameters.id;
-    let item = JSON.parse(event.body);
-
-
     if (event) {
         switch (event.httpMethod) {
             case 'POST':
-                app.post(item)
+                app.post(JSON.parse(event.body))
                     .then((data) => { done(null, data)})
                     .catch((err) => { done({"message": err}, null)});
                 break;
             case 'GET':
-                app.get(id, sortKey)
+                app.get(event.pathParameters.id, event.queryStringParameters.sortKey)
                     .then((data) => { done(null, data)})
                     .catch((err) => { done({"message": err}, null)});
                 break;
             case 'DELETE':
-                app.remove(id, sortKey)
+                app.remove(event.pathParameters.id, event.queryStringParameters.sortKey)
                     .then((skus) => { done(null, data)})
                     .catch((err) => { done({"message": err}, null)});
                 break;

@@ -4,7 +4,6 @@ functions:
   ItemService:
     environment:
       TABLE: 'Items'
-      NS_DOMAIN: ${self:custom.nuskin-domains.${self:custom.stage}}
     handler: src/index.handler
     events:
      - http:
@@ -33,7 +32,7 @@ provider:
   runtime: nodejs6.10
   endpointType: regional
   region: ${env:REGION, 'us-west-2'}
-  stage: ${opt:stage, 'sandbox'}
+  stage: ${opt:stage, 'dev'}
   envir:  ${env:DEP_ENVIRONMENT, 'dev'}
   tracing: true
   environment:
@@ -70,13 +69,12 @@ custom:
     stage: stageapi.cloud.nuskin.com
     test: testapi.cloud.nuskin.com
     dev: devapi.cloud.nuskin.com
-    sandbox: api.nuskin.io
 
   customDomain:
       basePath: 'ItemService'
       domainName: ${self:custom.domains.${self:custom.stage}}
       stage: '${self:custom.stage}'
-#      certificateName: '*.cloud.nuskin.com'
+      certificateName: '*.cloud.nuskin.com'
       endpointType: 'regional'
       createRoute53Record: false
 
@@ -85,7 +83,6 @@ custom:
     stage: arn:aws:lambda:us-west-2:453549906622:function:LogsToES-stage-LogsToES
     test: arn:aws:lambda:us-west-2:105371274045:function:LogsToES-test-LogsToES
     dev: arn:aws:lambda:us-west-2:140547422257:function:LogsToES-dev-LogsToES
-    sandbox: arn:aws:lambda:us-west-2:140547422257:function:LogsToES-dev-LogsToES
 
   logForwarding:
     destinationARN: ${self:custom.logARN.${self:custom.stage}}
