@@ -17,7 +17,7 @@ To use type the following commands in a terminal:
   # Create a service from a template using your own <Service Name>
   sls create -u https://github.com/devnuskin/microservice --path <Service Name>
   # Change into the newly created directory
-  cd my-service
+  cd <Service Name>
   ```
 
 4. **Configure you locale enviroment to run service:**
@@ -34,3 +34,5 @@ Your service is now available at:
 ##### http://localhost:3000/
 
 A Postman collection is available in the src/resources folder.
+
+
