@@ -1,7 +1,7 @@
 service: ItemService
 
 functions:
-  ItemService:
+  ItemService: #This is the name of your Lambda Function  ***** PLEASE SET
     environment:
       TABLE: 'Items'
     handler: src/index.handler
@@ -71,7 +71,7 @@ custom:
     dev: devapi.cloud.nuskin.com
 
   customDomain:
-      basePath: 'ItemService'
+      basePath: 'ItemService'  #This is the base path for your url  ***** PLEASE SET
       domainName: ${self:custom.domains.${self:custom.stage}}
       stage: '${self:custom.stage}'
       certificateName: '*.cloud.nuskin.com'
