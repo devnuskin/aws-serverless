@@ -15,7 +15,6 @@
         "nyc": "^11.4.1",
         "serverless-offline": "^3.18.0",
         "serverless-plugin-tracing": "^2.0.0",
-        "serverless-aws-alias": "^1.5.1",
         "serverless-domain-manager": "^2.3.4",
         "serverless-log-forwarding": "^1.1.6"
     }

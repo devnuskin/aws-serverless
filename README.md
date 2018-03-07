@@ -38,7 +38,7 @@ Customize your service to meet your needs including setting the Service name and
   ```bash
 git init
 git add .
-git commit -m "Inital Commit"
+git commit -m "Initial Commit"
 git remote add origin https://url.to/repo
 git push -u origin master
   ```
