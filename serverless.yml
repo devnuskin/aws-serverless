@@ -3,7 +3,7 @@ service: ItemService
 functions:
   ItemService:
     environment:
-      TABLE: 'ItemService'
+      TABLE: 'Items'
       NS_DOMAIN: ${self:custom.nuskin-domains.${self:custom.stage}}
     handler: src/index.handler
     events:
@@ -27,30 +27,6 @@ functions:
           parameters:
             paths:
               userId: true
-
-resources:
-  Resources:
-    FavoritesDynamoDBTable:
-      Type: AWS::DynamoDB::Table
-      Properties:
-        TableName: "ItemService"
-        AttributeDefinitions:
-          -
-            AttributeName: "id"
-            AttributeType: "S"
-          -
-            AttributeName: "sortKey"
-            AttributeType: "S"
-        KeySchema:
-          -
-            AttributeName: "id"
-            KeyType: "HASH"
-          -
-            AttributeName: "sortKey"
-            KeyType: "RANGE"
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
 
 provider:
   name: aws
