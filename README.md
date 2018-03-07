@@ -6,20 +6,17 @@ To use type the following commands in a terminal:
 
 
 
-
-
 ##### npm install serverless -g
 
 ##### sls login 
  
  instructions for setting up an [AWS Account Setup](https://www.youtube.com/watch?v=bFHmgqbAh4M)
 
-##### sls create -u https://github.com/devnuskin/microservice --path MyService 
+##### sls create -u https://github.com/devnuskin/microservice --path ItemService 
 
-
-In the serverless.yml file change *basePath: 'item'*  to  *basePath: 'MyService'*
+##### npm run config
 
 ##### sls deploy
 
 Your service is now available at:
-http://api.nuskin.io/MyService
+https://devapi.cloud.nuskin.com/ItemService
