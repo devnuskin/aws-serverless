@@ -1,6 +1,6 @@
 {
-    "name": "Item",
-    "description": "Item MicroService on Lambda",
+    "name": "ItemService",
+    "description": "ItemService MicroService on Lambda",
     "version": "0.0.1",
     "private": true,
     "dependencies": {
