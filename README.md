@@ -8,8 +8,14 @@ To use type the following commands in a terminal:
   ```bash
   npm install -g serverless
   ```
-2. **Set-up your [Provider Credentials](https://github.com/serverless/serverless/blob/master/docs/providers/aws/guide/credentials.md)**. [Watch the video on setting up credentials](https://www.youtube.com/watch?v=HSd9uYj2LJA)
- 
+2. **Set-up your AWS Credentials:** 
+```bash
+serverless config credentials --provider aws --key <ACCESS_KEY> --secret <ACCESS_SECRET>
+
+```
+   
+   For details on where to get your access_key and secret [click here](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html#Using_CreateAccessKey). 
+    
  
 3. **Create a service:**
   ```bash
