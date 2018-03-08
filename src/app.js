@@ -2,7 +2,7 @@
 
 const awsXRay = require('aws-xray-sdk');
 const AWS = awsXRay.captureAWS(require('aws-sdk'));
-AWS.config.update({ region: 'us-west-2' });
+AWS.config.update({ region: process.env.AWS_REGION });
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const tableName = process.env.TABLE;
