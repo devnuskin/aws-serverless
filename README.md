@@ -14,7 +14,7 @@ To use type the following commands in a terminal:
 3. **Create a service:**
   ```bash
   # Create a service from a template using your own <Service Name>
-  serverless create -u https://bitbucket.nuskin.net/scm/cc/aws-serverless --name myservice --path myservice
+  serverless create -u https://github.com/devnuskin/aws-serverless.git --name myservice --path myservice
   ```
 
 4. **Start your service locally:**
