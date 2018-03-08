@@ -6,7 +6,7 @@ provider:
   name: aws
   runtime: nodejs6.10
   endpointType: regional
-  region: ${env:REGION, 'us-west-2'}
+  region: 'us-west-2'
   stage: ${opt:stage, 'dev'}
   tracing: true
   basePath: 'item'
@@ -17,7 +17,8 @@ provider:
   deploymentBucket:
     name: ${self:provider.stage}-${self:provider.region}-nuskin-sls
     # serverSideEncryption: AES256 # when using server-side encryption
-package: # Optional deployment packaging configuration
+
+package:
   exclude:
     - README.md
     - buildspec.yml
@@ -72,32 +73,18 @@ functions:
 #CI/CD Deployment configuration update with caution
 
 custom:
-  stage: ${opt:stage, self:provider.stage}
-  api-domains:
-    prod: api.cloud.nuskin.com
-    stage: stageapi.cloud.nuskin.com
-    test: testapi.cloud.nuskin.com
-    dev: devapi.cloud.nuskin.com
 
   customDomain:
       basePath: ${self:provider.basePath}
-      domainName: ${self:custom.api-domains.${self:custom.stage}}
-      stage: ${self:custom.stage}
+      domainName: ${ssm:/global/apidomain,'devapi.cloud.nuskin.com' }
+      stage: ${self:provider.stage}
       certificateName: '*.cloud.nuskin.com'
       endpointType: 'regional'
       createRoute53Record: false
 
-  logARN:
-    prod: arn:aws:lambda:us-west-2:878096462359:function:LogsToES-prod-LogsToES
-    stage: arn:aws:lambda:us-west-2:453549906622:function:LogsToES-stage-LogsToES
-    test: arn:aws:lambda:us-west-2:105371274045:function:LogsToES-test-LogsToES
-    dev: arn:aws:lambda:us-west-2:140547422257:function:LogsToES-dev-LogsToES
-
   logForwarding:
-    destinationARN: ${self:custom.logARN.${self:custom.stage}}
+    destinationARN: ${ssm:/global/logarn, 'arn:aws:lambda:us-west-2:140547422257:function:LogsToES-dev-LogsToES'}
     filterPattern: '[timestamp=*Z, request_id="*-*", event]'
-
-
 
 plugins:
   - serverless-offline
