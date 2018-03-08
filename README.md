@@ -14,7 +14,7 @@ To use type the following commands in a terminal:
 3. **Create a service:**
   ```bash
   # Create a service from a template using your own <Service Name>
-  serverless create -u https://github.com/devnuskin/microservice --name myservice --path myservice
+  serverless create -u https://bitbucket.nuskin.net/scm/cc/aws-serverless --name myservice --path myservice
   ```
 
 4. **Start your service locally:**
@@ -30,11 +30,16 @@ A Postman collection is available in the src/resources folder.
 
 Customize your service to meet your needs including setting the Service name and The Base path in the serverless.yml file
 
+5. ##### To deploy to dev
 
+  ```bash
+  serverless deploy
+  ```
+Your service will be available at https://devapi.cloud.nuskin.com/myservice
 
 #### To add to CI/CD
 
-5. **Create Git Repo and clone:**
+ **Create Git Repo and set origin:**
   ```bash
 git init
 git add .
