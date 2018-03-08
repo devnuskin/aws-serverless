@@ -1,6 +1,5 @@
 service:
   name: ItemService
-  BASE_PATH: items
 
 provider:
   name: aws
@@ -9,14 +8,13 @@ provider:
   region: 'us-west-2'
   stage: ${opt:stage, 'dev'}
   tracing: true
-  basePath: 'item'
+  basePath: 'item' #This is the path  ***** PLEASE SET
   environment:
     AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
     NODE_ENV: ${opt:stage, 'dev'}
     TABLE: 'Items'  #This is the DyanmoDB Table name  ***** PLEASE SET
   deploymentBucket:
     name: ${self:provider.stage}-${self:provider.region}-nuskin-sls
-    # serverSideEncryption: AES256 # when using server-side encryption
 
 package:
   exclude:
@@ -34,7 +32,7 @@ package:
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
       Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}"
-    - Effect: "Allow" # xray permissions (required)
+    - Effect: "Allow"
       Action:
         - "xray:PutTraceSegments"
         - "xray:PutTelemetryRecords"
