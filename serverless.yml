@@ -37,7 +37,6 @@ resources:
   Resources:
     DynamoDBTable:
       Type: AWS::DynamoDB::Table
-      DeletionPolicy: Retain
       Properties:
         TableName: ${self:provider.environment.TABLE}
         AttributeDefinitions:
