@@ -16,13 +16,6 @@ provider:
   deploymentBucket:
     name: ${self:provider.stage}-${self:provider.region}-nuskin-sls
 
-package:
-  exclude:
-    - README.md
-    - buildspec.yml
-    - test/**
-
-
   iamRoleStatements: # permissions for all of your functions can be set here
     - Effect: Allow
       Action: # Gives permission to DynamoDB tables in a specific region
@@ -32,13 +25,21 @@ package:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
-      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}"
+      Resource: "arn:aws:dynamodb:${self:provider.region}:*:table/${self:provider.environment.TABLE}*"
     - Effect: "Allow"
       Action:
         - "xray:PutTraceSegments"
         - "xray:PutTelemetryRecords"
       Resource:
         - "*"
+
+package:
+  exclude:
+    - README.md
+    - buildspec.yml
+    - test/**
+    - .idea/**
+    - .nyc_output/**
 
 
 functions:
@@ -70,7 +71,6 @@ functions:
 
 
 #CI/CD Deployment configuration update with caution
-
 custom:
 
   customDomain:

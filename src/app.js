@@ -1,8 +1,9 @@
 'use strict';
 
-const awsXRay = require('aws-xray-sdk');
+const awsXRay = require('aws-xray-sdk-core');
 const AWS = awsXRay.captureAWS(require('aws-sdk'));
-AWS.config.update({ region: process.env.AWS_REGION });
+const REGION = process.env.AWS_REGION || 'us-west-2';
+AWS.config.update({ region: REGION });
 const dynamo = new AWS.DynamoDB.DocumentClient();
 
 const tableName = process.env.TABLE;
