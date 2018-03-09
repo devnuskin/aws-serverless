@@ -20,7 +20,7 @@ serverless config credentials --provider aws --key <ACCESS_KEY> --secret <ACCESS
 3. **Create a service:**
   ```bash
   # Create a service from a template using your own <Service Name>
-  serverless create -u https://github.com/devnuskin/aws-serverless.git --name myservice --path myservice
+  serverless create -u https://github.com/devnuskin/aws-serverless --name myservice --path myservice
   ```
 
 4. **Start your service locally:**
