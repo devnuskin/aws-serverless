@@ -33,14 +33,6 @@ provider:
       Resource:
         - "*"
 
-package:
-  exclude:
-    - README.md
-    - buildspec.yml
-    - test/**
-    - .idea/**
-    - .nyc_output/**
-
 resources:
   Resources:
     DynamoDBTable:
@@ -57,7 +49,6 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 1
-
 
 functions:
   ItemService: #This is the name of your Lambda Function  ***** PLEASE SET
@@ -83,8 +74,6 @@ functions:
           parameters:
             paths:
               userId: true
-
-
 
 
 #CI/CD Deployment configuration update with caution
@@ -116,9 +105,18 @@ custom:
         minimum: 5       # Minimum write capacity
         maximum: 100      # Maximum write capacity
         usage:  0.75        # Targeted usage percentage
+
 plugins:
   - serverless-offline
   - serverless-plugin-tracing
   - serverless-domain-manager
   - serverless-log-forwarding
   - serverless-dynamodb-autoscaling
+
+package:
+  exclude:
+    - README.md
+    - buildspec.yml
+    - test/**
+    - .idea/**
+    - .nyc_output/**
