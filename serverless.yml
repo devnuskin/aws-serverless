@@ -32,14 +32,25 @@ provider:
       Resource:
         - "*"
 
-package:
-  exclude:
-    - README.md
-    - buildspec.yml
-    - test/**
-    - .idea/**
-    - .nyc_output/**
-
+resources:
+  Resources:
+    ####################################################
+    ###Remove section if not creating DynamoDB tables###
+    ####################################################
+    DynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:provider.environment.TABLE}
+        AttributeDefinitions:
+          - AttributeName: country
+            AttributeType: S
+        KeySchema:
+          - AttributeName: country
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 1
+    ####################################################
 
 functions:
   ItemService: #This is the name of your Lambda Function  ***** PLEASE SET
@@ -67,11 +78,9 @@ functions:
               userId: true
 
 
-
-
 #CI/CD Deployment configuration update with caution
 custom:
-
+  ###Used for Assigning Function to Custom API Domain
   customDomain:
       basePath: ${self:provider.basePath}
       domainName: ${ssm:/global/apidomain,'devapi.cloud.nuskin.com' }
@@ -80,12 +89,40 @@ custom:
       endpointType: 'regional'
       createRoute53Record: false
 
+  ###Used for Automatically subscribing cloudwatch Lambda logs to ElasticSearch Service Lambda
   logForwarding:
     destinationARN: ${ssm:/global/logarn, 'arn:aws:lambda:us-west-2:140547422257:function:LogsToES-dev-LogsToES'}
     filterPattern: '[timestamp=*Z, request_id="*-*", event]'
+
+  #############################################################
+  ###Used for Setting up DynamoDB Autoscaling               ###
+  ###Remove section if not creating DynamoDB tables         ###
+  #############################################################
+  capacities:
+    - table: DynamoDBTable  # DynamoDB Resource Name - Not the Table Name
+      # index:              # List or single index name
+      #   - custom-index-name
+      read:
+        minimum: 5        # Minimum read capacity
+        maximum: 100     # Maximum read capacity
+        usage: 0.75       # Targeted usage percentage
+      write:
+        minimum: 5       # Minimum write capacity
+        maximum: 100      # Maximum write capacity
+        usage:  0.75        # Targeted usage percentage
+  #############################################################
 
 plugins:
   - serverless-offline
   - serverless-plugin-tracing
   - serverless-domain-manager
   - serverless-log-forwarding
+  - serverless-dynamodb-autoscaling
+
+package:
+  exclude:
+    - README.md
+    - buildspec.yml
+    - test/**
+    - .idea/**
+    - .nyc_output/**
