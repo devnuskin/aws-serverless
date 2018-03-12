@@ -35,6 +35,9 @@ provider:
 
 resources:
   Resources:
+    ####################################################
+    ###Remove section if not creating DynamoDB tables###
+    ####################################################
     DynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -48,6 +51,7 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 1
+    ####################################################
 
 functions:
   ItemService: #This is the name of your Lambda Function  ***** PLEASE SET
@@ -91,7 +95,10 @@ custom:
     destinationARN: ${ssm:/global/logarn, 'arn:aws:lambda:us-west-2:140547422257:function:LogsToES-dev-LogsToES'}
     filterPattern: '[timestamp=*Z, request_id="*-*", event]'
 
-  ###Used for Setting up Lambda Autoscaling
+  #############################################################
+  ###Used for Setting up DynamoDB Autoscaling               ###
+  ###Remove section if not creating DynamoDB tables         ###
+  #############################################################
   capacities:
     - table: DynamoDBTable  # DynamoDB Resource Name - Not the Table Name
       # index:              # List or single index name
@@ -104,6 +111,7 @@ custom:
         minimum: 5       # Minimum write capacity
         maximum: 100      # Maximum write capacity
         usage:  0.75        # Targeted usage percentage
+  #############################################################
 
 plugins:
   - serverless-offline
