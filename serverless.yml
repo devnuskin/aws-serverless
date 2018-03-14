@@ -113,12 +113,12 @@ custom:
       #   - custom-index-name
       read:
         minimum: 5        # Minimum read capacity
-        maximum: 100     # Maximum read capacity
+        maximum: 2000     # Maximum read capacity
         usage: 0.75       # Targeted usage percentage
       write:
-        minimum: 5       # Minimum write capacity
-        maximum: 100      # Maximum write capacity
-        usage:  0.75        # Targeted usage percentage
+        minimum: 5        # Minimum write capacity
+        maximum: 2000     # Maximum write capacity
+        usage:  0.75      # Targeted usage percentage
   #############################################################
 
 plugins:
