@@ -125,7 +125,13 @@ custom:
   #############################################################
 
 plugins:
+  - serverless-offline
+  - serverless-domain-manager
+  - serverless-plugin-tracing
+  - serverless-log-forwarding
+  - serverless-dynamodb-autoscaling
 
+package:
   exclude:
     - README.md
     - buildspec.yml
