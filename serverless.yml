@@ -61,7 +61,8 @@ functions:
         method: get
         cors:
           origin: '*'
-          headers: '*'
+          headers:
+            - '*'
           allowCredentials: false
         request:
           parameters:
@@ -72,14 +73,16 @@ functions:
         method: post
         cors:
           origin: '*'
-          headers: '*'
+          headers:
+            - '*'
           allowCredentials: false
      - http:
         path: /{id}
         method: delete
         cors:
           origin: '*'
-          headers: '*'
+          headers:
+            - '*'
           allowCredentials: false
         request:
           parameters:
