@@ -6,6 +6,7 @@ provider:
   endpointType: regional
   region: 'us-west-2'
   stage: ${opt:stage, 'dev'}
+  logRetentionInDays: 30
   tracing: true
   basePath: 'item' #This is the path  ***** PLEASE SET
   environment:
