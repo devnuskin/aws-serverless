@@ -6,7 +6,7 @@
   "dependencies": {
     "aws-xray-sdk-core": "^1.2.0",
     "config": "^1.30.0",
-    "cors-handler": "0.0.2"
+    "ns-aws-utils": "1.0.6"
   },
   "devDependencies": {
     "aws-sdk": "^2.209.0",

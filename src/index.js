@@ -1,7 +1,9 @@
 'use strict';
 
 const app = require('./app');
-const corsHandler = require("cors-handler");
+const nsAwsUtils = require("ns-aws-utils");
+const log = nsAwsUtils.logger;
+const cors = nsAwsUtils.cors;
 
 /**
  * handler is a Lambda function.  The AWS Lambda service will invoke this function when a given event and runtime.
@@ -49,5 +51,5 @@ function handler(event, context, callback) {
 
 
 module.exports = {
-    handler: corsHandler.cors(handler)
+    handler: cors(handler)
 };
