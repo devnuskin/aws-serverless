@@ -93,6 +93,10 @@ functions:
 
 #CI/CD Deployment configuration update with caution
 custom:
+  ##Used so servless-offline has the same path as after deploying to the gateway
+  serverless-offline:
+    prefix: ${self:provider.basePath}
+
   ###Used for Assigning Function to Custom API Domain
   customDomain:
       basePath: ${self:provider.basePath}
