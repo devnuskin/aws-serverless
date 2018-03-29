@@ -42,6 +42,8 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.TABLE}
+        SSESpecification:
+          SSEEnabled: true
         AttributeDefinitions:
           - AttributeName: country
             AttributeType: S
