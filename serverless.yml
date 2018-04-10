@@ -2,7 +2,7 @@ service: ItemService
 
 provider:
   name: aws
-  runtime: nodejs6.10
+  runtime: nodejs8.10
   endpointType: regional
   region: 'us-west-2'
   stage: ${opt:stage, 'dev'}
@@ -56,7 +56,7 @@ resources:
     ####################################################
 
 functions:
-  MicroService: ${self:provider.basePath} #This is the name of your Lambda Function  ***** PLEASE SET
+  MicroService: #This is the name of your Lambda Function  ***** PLEASE CHANGE
     handler: src/index.handler
     events:
      - http:
@@ -71,6 +71,17 @@ functions:
           parameters:
             paths:
               id: true
+        ####################################################
+        ### Section used for the custom authorizer       ###
+        ### See Custom Authorizer's README for details   ###
+        ### Remove/Update as Needed                      ###
+        ####################################################
+        authorizer:
+          arn: ${ssm:/global/identifiedAuthorizer}
+          resultTtlInSeconds: 600
+          identitySource: method.request.header.Authorization
+          type: request
+        ####################################################
      - http:
         path: /
         method: post
@@ -102,7 +113,7 @@ custom:
   ###Used for Assigning Function to Custom API Domain
   customDomain:
       basePath: ${self:provider.basePath}
-      domainName: ${ssm:/global/apidomain,'devapi.cloud.nuskin.com' }
+      domainName: ${ssm:/global/apidomain}
       stage: ${self:provider.stage}
       certificateName: '*.cloud.nuskin.com'
       endpointType: 'regional'
@@ -110,7 +121,7 @@ custom:
 
   ###Used for Automatically subscribing cloudwatch Lambda logs to ElasticSearch Service Lambda
   logForwarding:
-    destinationARN: ${ssm:/global/logarn, 'arn:aws:lambda:us-west-2:140547422257:function:LogsToES-dev-LogsToES'}
+    destinationARN: ${ssm:/global/logarn}
     filterPattern: '[timestamp=*Z, request_id="*-*", event]'
 
   #############################################################
@@ -141,7 +152,6 @@ plugins:
 package:
   exclude:
     - README.md
-    - buildspec.yml
     - test/**
     - .idea/**
     - .nyc_output/**
