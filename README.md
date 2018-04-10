@@ -50,7 +50,7 @@ Your service will be available at https://devapi.cloud.nuskin.com/myservice
 git init
 git add .
 git commit -m "Initial Commit"
-git remote add origin https://url.to/repo
+git remote add origin ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/{service-name}
 git push -u origin master
   ```
 

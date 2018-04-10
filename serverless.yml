@@ -53,7 +53,7 @@ resources:
     ####################################################
 
 functions:
-  MicroService: #This is the name of your Lambda Function  ***** PLEASE SET
+  MicroService: ${self:provider.basePath} #This is the name of your Lambda Function  ***** PLEASE SET
     handler: src/index.handler
     events:
      - http:
