@@ -6,6 +6,7 @@ provider:
   endpointType: regional
   region: 'us-west-2'
   stage: ${opt:stage, 'dev'}
+  logRetentionInDays: 30
   tracing: true
   basePath: 'item' #This is the path  ***** PLEASE SET
   environment:
@@ -41,6 +42,8 @@ resources:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:provider.environment.TABLE}
+        SSESpecification:
+          SSEEnabled: true
         AttributeDefinitions:
           - AttributeName: country
             AttributeType: S
@@ -92,6 +95,10 @@ functions:
 
 #CI/CD Deployment configuration update with caution
 custom:
+  ##Used so servless-offline has the same path as after deploying to the gateway
+  serverless-offline:
+    prefix: ${self:provider.basePath}
+
   ###Used for Assigning Function to Custom API Domain
   customDomain:
       basePath: ${self:provider.basePath}
