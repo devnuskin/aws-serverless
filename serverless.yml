@@ -44,6 +44,8 @@ resources:
         TableName: ${self:provider.environment.TABLE}
         SSESpecification:
           SSEEnabled: true
+        StreamSpecification:
+          StreamViewType: NEW_AND_OLD_IMAGES
         AttributeDefinitions:
           - AttributeName: country
             AttributeType: S
@@ -151,7 +153,15 @@ plugins:
 
 package:
   exclude:
-    - README.md
-    - test/**
     - .idea/**
     - .nyc_output/**
+    - "*.iml"
+    - buildspec.yml
+    - coverage/**
+    - LICENSE
+    - mochawesome-report/**
+    - qa-dashboard.sh
+    - README.md
+    - swagger.yml
+    - template.yml
+    - test/**

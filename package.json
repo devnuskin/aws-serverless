@@ -6,17 +6,17 @@
   "dependencies": {
     "aws-xray-sdk-core": "^1.2.0",
     "config": "^1.30.0",
-    "ns-aws-utils": "1.0.9"
+    "ns-aws-utils": "1.0.10"
   },
   "devDependencies": {
-    "aws-sdk": "^2.223.1",
-    "fetch": "^1.1.0",
-    "mocha": "^5.0.5",
+    "aws-sdk": "^2.224.1",
+    "mocha": "^5.1.0",
+    "mochawesome": "^3.0.2",
     "nyc": "^11.6.0",
     "serverless-domain-manager": "^2.3.6",
     "serverless-dynamodb-autoscaling": "^0.6.2",
     "serverless-log-forwarding": "^1.1.6",
-    "serverless-offline": "^3.20.1",
+    "serverless-offline": "^3.20.2",
     "serverless-plugin-tracing": "^2.0.0"
   }
 }

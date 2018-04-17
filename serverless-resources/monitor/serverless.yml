@@ -1,0 +1,336 @@
+# Service-specific monitoring resources.
+# Be sure to subscribe to the SNS topic via the email that goes out.
+
+# Before deploying:
+# -update the first group of variables in the custom section
+
+service: 
+  name: ${self:custom.serviceName}-Monitoring
+
+provider:
+  name: aws
+  region: 'us-west-2'
+  stage: ${opt:stage, 'dev'}
+  deploymentBucket:
+    name: ${self:provider.stage}-${self:provider.region}-nuskin-sls
+custom:
+  # the name of the service to monitor (defined at the top of the service's serverless.yml file)
+  serviceName: ${file(../../serverless.yml):service.name}
+  # the name of the function to monitor (defined under "functions" in the service's serverless.yml file)
+  functionName: Downtime
+  # the name of the DynamoDB table that will be monitored (assuming one DynamoDB table per service/API)
+  tableName: ${file(../../serverless.yml):provider.environment.TABLE}
+  # the name of the initial email to be subscribed to the SNS topic
+  email: jsueper@amazon.com
+  
+  
+  # the name of the service's API Gateway API that will be monitored
+  apiName: ${self:provider.stage}-${self:custom.serviceName}
+  # the name of the Lambda function that will be monitored (assuming one Lambda function per service/API)
+  lambdaName: ${self:custom.serviceName}-${self:provider.stage}-${self:custom.functionName}
+resources:
+  Resources:
+    Topic:
+      Type: 'AWS::SNS::Topic'
+      Properties:
+        DisplayName: ${self:custom.apiName}-Monitoring
+        Subscription:
+          - Protocol: email
+            Endpoint: ${self:custom.email}
+        TopicName: ${self:custom.apiName}-Monitoring
+    Dashboard:
+      Type: 'AWS::CloudWatch::Dashboard'
+      Properties:
+        DashboardName: ${self:custom.serviceName}
+        DashboardBody:
+          'Fn::Join':
+            - ''
+            -
+              - '{"widgets": ['
+              # API Gateway alarms (specific to an API)
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 4XX Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway4XXCount, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 4XX Error Rate", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway4XXErrorRate, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 5XX Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway5XXCount, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 5XX Error Rate", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway5XXErrorRate, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayCount, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Integration Latency", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayIntegrationLatency, Arn], '"]}}},']]
+              # Lambda alarms (specific to a function)
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Invocations", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaInvocations, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Errors", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaErrors, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Duration", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaDuration, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Throttles", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaThrottles, Arn], '"]}}},']]
+              # DynamoDB alarms (specific to a table)
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Consumed RCUs", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBConsumedRCU, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Consumed WCUs", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBConsumedWCU, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Read Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBReadThrottleEvents, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Write Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBWriteThrottleEvents, Arn], '"]}}}']] #this last one won't have a trailing comma
+              - ']}'
+    AlarmAPIGateway4XXCount:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} API Gateway 4XX Count
+        AlarmName: ${self:custom.apiName}-apigateway-4xx-count
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: ApiName
+            Value: ${self:custom.apiName}
+        EvaluationPeriods: 1
+        MetricName: 4XXError
+        Namespace: AWS/ApiGateway
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 100
+        TreatMissingData: notBreaching
+    AlarmAPIGateway4XXErrorRate:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} API Gateway 4XX Error Rate
+        AlarmName: ${self:custom.apiName}-apigateway-4xx-errorrate
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: ApiName
+            Value: ${self:custom.apiName}
+        EvaluationPeriods: 1
+        MetricName: 4XXError
+        Namespace: AWS/ApiGateway
+        Period: 60
+        Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: .1
+        TreatMissingData: notBreaching
+    AlarmAPIGateway5XXCount:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} API Gateway 5XX Count
+        AlarmName: ${self:custom.apiName}-apigateway-5xx-count
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: ApiName
+            Value: ${self:custom.apiName}
+        EvaluationPeriods: 1
+        MetricName: 5XXError
+        Namespace: AWS/ApiGateway
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 100
+        TreatMissingData: notBreaching
+    AlarmAPIGateway5XXErrorRate:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} API Gateway 5XX Error Rate
+        AlarmName: ${self:custom.apiName}-apigateway-5xx-errorrate
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: ApiName
+            Value: ${self:custom.apiName}
+        EvaluationPeriods: 1
+        MetricName: 5XXError
+        Namespace: AWS/ApiGateway
+        Period: 60
+        Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: .1
+        TreatMissingData: notBreaching
+    AlarmAPIGatewayCount:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} API Gateway Count
+        AlarmName: ${self:custom.apiName}-apigateway-count
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: ApiName
+            Value: ${self:custom.apiName}
+        EvaluationPeriods: 1
+        MetricName: Count
+        Namespace: AWS/ApiGateway
+        Period: 60
+        Statistic: SampleCount #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 300000
+        TreatMissingData: notBreaching
+    AlarmAPIGatewayIntegrationLatency:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} API Gateway Integration Latency
+        AlarmName: ${self:custom.apiName}-apigateway-integration-latency
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: ApiName
+            Value: ${self:custom.apiName}
+        EvaluationPeriods: 1
+        MetricName: IntegrationLatency
+        Namespace: AWS/ApiGateway
+        Period: 60
+        Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 5000
+        TreatMissingData: notBreaching
+    AlarmLambdaInvocations:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} Lambda Invocations
+        AlarmName: ${self:custom.apiName}-lambda-invocations
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: FunctionName
+            Value: ${self:custom.lambdaName}
+        EvaluationPeriods: 1
+        MetricName: Invocations
+        Namespace: AWS/Lambda
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 1000
+        TreatMissingData: notBreaching
+    AlarmLambdaErrors:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} Lambda Errors
+        AlarmName: ${self:custom.apiName}-lambda-errors
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: FunctionName
+            Value: ${self:custom.lambdaName}
+        EvaluationPeriods: 1
+        MetricName: Errors
+        Namespace: AWS/Lambda
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 0
+        TreatMissingData: notBreaching
+    AlarmLambdaDuration:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} Lambda Duration
+        AlarmName: ${self:custom.apiName}-lambda-duration
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: FunctionName
+            Value: ${self:custom.lambdaName}
+        EvaluationPeriods: 1
+        MetricName: Duration
+        Namespace: AWS/Lambda
+        Period: 60
+        Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 5000
+        TreatMissingData: notBreaching
+    AlarmLambdaThrottles:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} Lambda Throttles
+        AlarmName: ${self:custom.apiName}-lambda-throttles
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: FunctionName
+            Value: ${self:custom.lambdaName}
+        EvaluationPeriods: 1
+        MetricName: Throttles
+        Namespace: AWS/Lambda
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 0
+        TreatMissingData: notBreaching
+    ######################################################################################
+    # Note that DynamoDB indexes may not be monitored in addition to the underlying tables.
+    ######################################################################################
+    AlarmDynamoDBConsumedRCU:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} DynamoDB Consumed RCUs
+        AlarmName: ${self:custom.apiName}-dynamodb-consumed-rcus
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: TableName
+            Value: ${self:custom.tableName}
+        EvaluationPeriods: 1
+        MetricName: ConsumedReadCapacityUnits
+        Namespace: AWS/DynamoDB
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 300 #300 per minute/60 seconds = 5 RCU (per second)
+        TreatMissingData: notBreaching
+    AlarmDynamoDBConsumedWCU:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} DynamoDB Consumed WCUs
+        AlarmName: ${self:custom.apiName}-dynamodb-consumed-wcus
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: TableName
+            Value: ${self:custom.tableName}
+        EvaluationPeriods: 1
+        MetricName: ConsumedWriteCapacityUnits
+        Namespace: AWS/DynamoDB
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 300 #300 per minute/60 seconds = 5 WCU (per second)
+        TreatMissingData: notBreaching
+    AlarmDynamoDBReadThrottleEvents:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} DynamoDB Read Throttle Events
+        AlarmName: ${self:custom.apiName}-dynamodb-read-throttle-events
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: TableName
+            Value: ${self:custom.tableName}
+        EvaluationPeriods: 1
+        MetricName: ReadThrottleEvents
+        Namespace: AWS/DynamoDB
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 0
+        TreatMissingData: notBreaching
+    AlarmDynamoDBWriteThrottleEvents:
+      Type: 'AWS::CloudWatch::Alarm'
+      Properties:
+        ActionsEnabled: true
+        AlarmActions:
+          - Ref: Topic
+        AlarmDescription: ${self:custom.apiName} DynamoDB Write Throttle Events
+        AlarmName: ${self:custom.apiName}-dynamodb-write-throttle-events
+        ComparisonOperator: GreaterThanThreshold
+        Dimensions:
+          - Name: TableName
+            Value: ${self:custom.tableName}
+        EvaluationPeriods: 1
+        MetricName: WriteThrottleEvents
+        Namespace: AWS/DynamoDB
+        Period: 60
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+        Threshold: 0
+        TreatMissingData: notBreaching
