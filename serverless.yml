@@ -58,6 +58,11 @@ resources:
     ####################################################
 
 functions:
+  MicroService-sns:  #This is the name of your SNS Lambda Function  ***** PLEASE CHANGE
+    handler: src/index.snsProductInfo
+    events:
+      - sns: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:MicroService   #This is the ARN of your SNS Topic  ***** PLEASE CHANGE LAST NAME
+
   MicroService: #This is the name of your Lambda Function  ***** PLEASE CHANGE
     handler: src/index.handler
     events:
@@ -150,6 +155,7 @@ plugins:
   - serverless-plugin-tracing
   - serverless-log-forwarding
   - serverless-dynamodb-autoscaling
+  - serverless-pseudo-parameters
 
 package:
   exclude:
