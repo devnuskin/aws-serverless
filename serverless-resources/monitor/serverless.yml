@@ -21,7 +21,7 @@ custom:
   # the name of the DynamoDB table that will be monitored (assuming one DynamoDB table per service/API)
   tableName: ${file(../../serverless.yml):provider.environment.TABLE}
   # the name of the initial email to be subscribed to the SNS topic
-  email: jsueper@amazon.com
+  email: AWSMonitoringTeam@nuskin.com
   
   
   # the name of the service's API Gateway API that will be monitored
