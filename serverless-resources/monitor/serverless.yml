@@ -20,9 +20,8 @@ custom:
   functionName: Downtime
   # the name of the DynamoDB table that will be monitored (assuming one DynamoDB table per service/API)
   tableName: ${file(../../serverless.yml):provider.environment.TABLE}
-  # the name of the initial email to be subscribed to the SNS topic
-  email: AWSMonitoringTeam@nuskin.com
-  
+  # Topic ARN
+  topicArn: ${ssm:/global/monitoring-sns-arn}
   
   # the name of the service's API Gateway API that will be monitored
   apiName: ${self:provider.stage}-${self:custom.serviceName}
@@ -30,14 +29,6 @@ custom:
   lambdaName: ${self:custom.serviceName}-${self:provider.stage}-${self:custom.functionName}
 resources:
   Resources:
-    Topic:
-      Type: 'AWS::SNS::Topic'
-      Properties:
-        DisplayName: ${self:custom.apiName}-Monitoring
-        Subscription:
-          - Protocol: email
-            Endpoint: ${self:custom.email}
-        TopicName: ${self:custom.apiName}-Monitoring
     Dashboard:
       Type: 'AWS::CloudWatch::Dashboard'
       Properties:
@@ -54,6 +45,7 @@ resources:
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 5XX Error Rate", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway5XXErrorRate, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayCount, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Integration Latency", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayIntegrationLatency, Arn], '"]}}},']]
+              # - 'Fn::Join': ['', ['{"type": "metric", "properties": {"view":"timeSeries","stacked":false,"metrics":[["AWS/ApiGateway","CacheHitCount","ApiName","${self:provider.stage}-Downtime","Stage","${self:provider.stage}",{"stat":"Sum","period":300}],[".","CacheMissCount",".",".",".",".",{"period":300,"stat":"Sum"}]],"period":300,"region":"${self:provider.region}","title":"API Gateway CacheHitCount, CacheMissCount"}},']]
               # Lambda alarms (specific to a function)
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Invocations", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaInvocations, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Errors", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaErrors, Arn], '"]}}},']]
@@ -70,7 +62,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} API Gateway 4XX Count
         AlarmName: ${self:custom.apiName}-apigateway-4xx-count
         ComparisonOperator: GreaterThanThreshold
@@ -89,7 +81,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} API Gateway 4XX Error Rate
         AlarmName: ${self:custom.apiName}-apigateway-4xx-errorrate
         ComparisonOperator: GreaterThanThreshold
@@ -108,7 +100,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} API Gateway 5XX Count
         AlarmName: ${self:custom.apiName}-apigateway-5xx-count
         ComparisonOperator: GreaterThanThreshold
@@ -127,7 +119,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} API Gateway 5XX Error Rate
         AlarmName: ${self:custom.apiName}-apigateway-5xx-errorrate
         ComparisonOperator: GreaterThanThreshold
@@ -146,7 +138,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} API Gateway Count
         AlarmName: ${self:custom.apiName}-apigateway-count
         ComparisonOperator: GreaterThanThreshold
@@ -165,7 +157,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} API Gateway Integration Latency
         AlarmName: ${self:custom.apiName}-apigateway-integration-latency
         ComparisonOperator: GreaterThanThreshold
@@ -184,7 +176,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} Lambda Invocations
         AlarmName: ${self:custom.apiName}-lambda-invocations
         ComparisonOperator: GreaterThanThreshold
@@ -203,7 +195,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} Lambda Errors
         AlarmName: ${self:custom.apiName}-lambda-errors
         ComparisonOperator: GreaterThanThreshold
@@ -222,7 +214,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} Lambda Duration
         AlarmName: ${self:custom.apiName}-lambda-duration
         ComparisonOperator: GreaterThanThreshold
@@ -241,7 +233,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} Lambda Throttles
         AlarmName: ${self:custom.apiName}-lambda-throttles
         ComparisonOperator: GreaterThanThreshold
@@ -263,7 +255,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} DynamoDB Consumed RCUs
         AlarmName: ${self:custom.apiName}-dynamodb-consumed-rcus
         ComparisonOperator: GreaterThanThreshold
@@ -282,7 +274,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} DynamoDB Consumed WCUs
         AlarmName: ${self:custom.apiName}-dynamodb-consumed-wcus
         ComparisonOperator: GreaterThanThreshold
@@ -301,7 +293,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} DynamoDB Read Throttle Events
         AlarmName: ${self:custom.apiName}-dynamodb-read-throttle-events
         ComparisonOperator: GreaterThanThreshold
@@ -320,7 +312,7 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - Ref: Topic
+          - ${self:custom.topicArn}
         AlarmDescription: ${self:custom.apiName} DynamoDB Write Throttle Events
         AlarmName: ${self:custom.apiName}-dynamodb-write-throttle-events
         ComparisonOperator: GreaterThanThreshold
