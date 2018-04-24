@@ -17,7 +17,7 @@ custom:
   # the name of the service to monitor (defined at the top of the service's serverless.yml file)
   serviceName: ${file(../../serverless.yml):service.name}
   # the name of the function to monitor (defined under "functions" in the service's serverless.yml file)
-  functionName: Downtime
+  functionName: XXXX
   # the name of the DynamoDB table that will be monitored (assuming one DynamoDB table per service/API)
   tableName: ${file(../../serverless.yml):provider.environment.TABLE}
   # Topic ARN
