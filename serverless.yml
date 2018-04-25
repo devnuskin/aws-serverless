@@ -1,4 +1,5 @@
-service: ItemService
+service: 
+  name: ItemService
 
 provider:
   name: aws
