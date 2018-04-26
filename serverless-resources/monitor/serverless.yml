@@ -164,7 +164,7 @@ resources:
         Dimensions:
           - Name: ApiName
             Value: ${self:custom.apiName}
-        EvaluationPeriods: 1
+        EvaluationPeriods: 3
         MetricName: IntegrationLatency
         Namespace: AWS/ApiGateway
         Period: 60
