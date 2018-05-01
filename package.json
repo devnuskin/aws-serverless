@@ -1,26 +1,26 @@
 {
-	"name": "ItemService",
-	"description": "ItemService MicroService on Lambda",
-	"version": "0.0.1",
-	"private": true,
-	"scripts": {
-		"test": "nyc --reporter=html --reporter=text mocha --reporter=mochawesome --timeout 5000"
-	},
-	"dependencies": {
-		"aws-xray-sdk-core": "^1.2.0",
-		"config": "^1.30.0",
-		"ns-aws-utils": "1.0.10"
-	},
-	"devDependencies": {
-		"aws-sdk": "^2.227.1",
-		"mocha": "^5.1.1",
-		"mochawesome": "^3.0.2",
-		"nyc": "^11.7.1",
-		"serverless-domain-manager": "^2.3.6",
-		"serverless-dynamodb-autoscaling": "^0.6.2",
-		"serverless-log-forwarding": "^1.1.6",
-		"serverless-offline": "^3.20.3",
-		"serverless-plugin-tracing": "^2.0.0",
-		"serverless-pseudo-parameters": "^1.6.0"
-	}
+  "name": "ItemService",
+  "description": "ItemService MicroService on Lambda",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "test": "nyc --reporter=html --reporter=text --check-coverage --lines 80 --functions 90 --branches 50 mocha --reporter=mochawesome --timeout 5000"
+  },
+  "dependencies": {
+    "aws-xray-sdk-core": "^1.2.0",
+    "config": "^1.30.0",
+    "ns-aws-utils": "1.0.10"
+  },
+  "devDependencies": {
+    "aws-sdk": "^2.230.1",
+    "mocha": "^5.1.1",
+    "mochawesome": "^3.0.2",
+    "nyc": "^11.7.1",
+    "serverless-domain-manager": "^2.3.6",
+    "serverless-dynamodb-autoscaling": "^0.6.2",
+    "serverless-log-forwarding": "^1.1.6",
+    "serverless-offline": "^3.20.3",
+    "serverless-plugin-tracing": "^2.0.0",
+    "serverless-pseudo-parameters": "^1.6.0"
+  }
 }
