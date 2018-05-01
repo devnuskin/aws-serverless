@@ -157,7 +157,7 @@ plugins:
   - serverless-log-forwarding
   - serverless-dynamodb-autoscaling
   - serverless-pseudo-parameters
-
+  - serverless-prune-plugin
 package:
   exclude:
     - .idea/**
