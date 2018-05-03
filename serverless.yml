@@ -53,9 +53,9 @@ resources:
         KeySchema:
           - AttributeName: country
             KeyType: HASH
-        ProvisionedThroughput:
+        ProvisionedThroughput:    ##These should match the minimum numbers in the Autoscaling section
           ReadCapacityUnits: 5
-          WriteCapacityUnits: 1
+          WriteCapacityUnits: 5
     ####################################################
 
 functions:
@@ -138,18 +138,31 @@ custom:
   #############################################################
   capacities:
     - table: DynamoDBTable  # DynamoDB Resource Name - Not the Table Name
-      # index:              # List or single index name
-      #   - custom-index-name
+
+      #########################################################################
+      ### Below is needed to setup autoscaling on each index you have setup ###
+      ### Make sure you put the correct index names                         ###
+      ### UnComment and correct Index names as needed                       ###
+      #########################################################################
+      # index:                                        # List or single index name
+      #   - federatedId-index
+      #   - accountId-index
+
+      #########################################################################
+      ### These numbers apply across the table and any indexes listed above ###
+      ### Make sure you apply the correct capacity numbers.                 ###
+      ### Total RCU and WCU capacity costs include table and all indexes    ###
+      ### 1000 WCU * (1 Table + 2 Indexes) = 3000 WCU    So be Careful      ###
+      #########################################################################
       read:
         minimum: 5        # Minimum read capacity
-        maximum: 2000     # Maximum read capacity
+        maximum: 999      # Maximum read capacity
         usage: 0.75       # Targeted usage percentage
       write:
         minimum: 5        # Minimum write capacity
-        maximum: 2000     # Maximum write capacity
+        maximum: 999      # Maximum write capacity
         usage:  0.75      # Targeted usage percentage
-  #############################################################
-
+ 
 plugins:
   - serverless-offline
   - serverless-domain-manager
