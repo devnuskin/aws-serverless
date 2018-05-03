@@ -58,6 +58,23 @@ resources:
           WriteCapacityUnits: 5
     ####################################################
 
+    ##############################################
+    ## Used for Enabling Metics on API Stage    ##
+    ##############################################
+    ApiGatewayStage:
+      Type: AWS::ApiGateway::Stage
+      Properties:
+        DeploymentId:
+          Ref: __deployment__ # provided by serverless-plugin-bind-deployment-id
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        StageName : ${self:provider.stage}
+        MethodSettings:
+          - HttpMethod: "*"
+            LoggingLevel: INFO
+            MetricsEnabled: true
+            ResourcePath: "/*"
+            
 functions:
   MicroService-sns:  #This is the name of your SNS Lambda Function  ***** PLEASE CHANGE
     handler: src/index.snsProductInfo
@@ -171,6 +188,7 @@ plugins:
   - serverless-dynamodb-autoscaling
   - serverless-pseudo-parameters
   - serverless-prune-plugin
+  - serverless-plugin-bind-deployment-id
 package:
   exclude:
     - .idea/**
