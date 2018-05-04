@@ -1,9 +1,9 @@
 # Service-specific monitoring resources.
-# Be sure to subscribe to the SNS topic via the email that goes out.
 
 # Before deploying:
 # -update the first group of variables in the custom section
-
+# Removed Trying to Grab Service Name and Table Name from serverless.yml file
+# Since other options need to be Set anyway by hand.
 service: 
   name: ${self:custom.serviceName}-Monitoring
 
@@ -15,12 +15,12 @@ provider:
     name: ${self:provider.stage}-${self:provider.region}-nuskin-sls
 custom:
   # the name of the service to monitor (defined at the top of the service's serverless.yml file)
-  serviceName: ${file(../../serverless.yml):service.name}
+  serviceName: XXXX
   # the name of the function to monitor (defined under "functions" in the service's serverless.yml file)
   functionName: XXXX
   # the name of the DynamoDB table that will be monitored (assuming one DynamoDB table per service/API)
-  tableName: ${file(../../serverless.yml):provider.environment.TABLE}
-  # Topic ARN
+  tableName: XXXX
+  # Topic ARN  -- Don't Change
   topicArn: ${ssm:/global/monitoring-sns-arn}
   
   # the name of the service's API Gateway API that will be monitored
@@ -51,9 +51,11 @@ resources:
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Errors", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaErrors, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Duration", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaDuration, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Throttles", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaThrottles, Arn], '"]}}},']]
-              # DynamoDB alarms (specific to a table)
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Consumed RCUs", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBConsumedRCU, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Consumed WCUs", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBConsumedWCU, Arn], '"]}}},']]
+              # DynamoDB Table and GlobalSecondary Index Widgets (specific to a table and index)
+              # Uncomment and Change to Correct Labels
+              #- 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "XXXX-index DynamoDB Read Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBReadThrottleEventsXXXX, Arn], '"]}}},']]
+              #- 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "XXXX-index DynamoDB Write Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBWriteThrottleEventsXXXX, Arn], '"]}}},']]
+              # DynamoDB Table Widgets (specific to a table)
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Read Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBReadThrottleEvents, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Write Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBWriteThrottleEvents, Arn], '"]}}}']] #this last one won't have a trailing comma
               - ']}'
@@ -250,44 +252,6 @@ resources:
     ######################################################################################
     # Note that DynamoDB indexes may not be monitored in addition to the underlying tables.
     ######################################################################################
-    AlarmDynamoDBConsumedRCU:
-      Type: 'AWS::CloudWatch::Alarm'
-      Properties:
-        ActionsEnabled: true
-        AlarmActions:
-          - ${self:custom.topicArn}
-        AlarmDescription: ${self:custom.apiName} DynamoDB Consumed RCUs
-        AlarmName: ${self:custom.apiName}-dynamodb-consumed-rcus
-        ComparisonOperator: GreaterThanThreshold
-        Dimensions:
-          - Name: TableName
-            Value: ${self:custom.tableName}
-        EvaluationPeriods: 1
-        MetricName: ConsumedReadCapacityUnits
-        Namespace: AWS/DynamoDB
-        Period: 60
-        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: 300 #300 per minute/60 seconds = 5 RCU (per second)
-        TreatMissingData: notBreaching
-    AlarmDynamoDBConsumedWCU:
-      Type: 'AWS::CloudWatch::Alarm'
-      Properties:
-        ActionsEnabled: true
-        AlarmActions:
-          - ${self:custom.topicArn}
-        AlarmDescription: ${self:custom.apiName} DynamoDB Consumed WCUs
-        AlarmName: ${self:custom.apiName}-dynamodb-consumed-wcus
-        ComparisonOperator: GreaterThanThreshold
-        Dimensions:
-          - Name: TableName
-            Value: ${self:custom.tableName}
-        EvaluationPeriods: 1
-        MetricName: ConsumedWriteCapacityUnits
-        Namespace: AWS/DynamoDB
-        Period: 60
-        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: 300 #300 per minute/60 seconds = 5 WCU (per second)
-        TreatMissingData: notBreaching
     AlarmDynamoDBReadThrottleEvents:
       Type: 'AWS::CloudWatch::Alarm'
       Properties:
@@ -326,3 +290,50 @@ resources:
         Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
         Threshold: 0
         TreatMissingData: notBreaching
+    ########################################################
+    ####### Dynamo Secondardy Index Examples    
+    ####### Be sure to change XXXX to correct names
+    ####### Section Labels can't have dashes(-)
+    ########################################################
+    # AlarmDynamoDBReadThrottleEventsXXXX:
+    #   Type: 'AWS::CloudWatch::Alarm'
+    #   Properties:
+    #     ActionsEnabled: true
+    #     AlarmActions:
+    #       - ${self:custom.topicArn}
+    #     AlarmDescription: ${self:custom.apiName} DynamoDB Read Throttle Events for XXXX-index
+    #     AlarmName: ${self:custom.apiName}-dynamodb-read-throttle-EventsXXXX
+    #     ComparisonOperator: GreaterThanThreshold
+    #     Dimensions:
+    #       - Name: TableName
+    #         Value: ${self:custom.tableName}
+    #       - Name: GlobalSecondaryIndexName
+    #         Value: XXXX-index
+    #     EvaluationPeriods: 1
+    #     MetricName: ReadThrottleEvents
+    #     Namespace: AWS/DynamoDB
+    #     Period: 60
+    #     Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+    #     Threshold: 0
+    #     TreatMissingData: notBreaching
+    # AlarmDynamoDBWriteThrottleEventsXXXX:
+    #   Type: 'AWS::CloudWatch::Alarm'
+    #   Properties:
+    #     ActionsEnabled: true
+    #     AlarmActions:
+    #       - ${self:custom.topicArn}
+    #     AlarmDescription: ${self:custom.apiName} DynamoDB Write Throttle Events for XXXX-index
+    #     AlarmName: ${self:custom.apiName}-dynamodb-write-throttle-EventsXXXX
+    #     ComparisonOperator: GreaterThanThreshold
+    #     Dimensions:
+    #       - Name: TableName
+    #         Value: ${self:custom.tableName}
+    #       - Name: GlobalSecondaryIndexName
+    #         Value: XXXX-index
+    #     EvaluationPeriods: 1
+    #     MetricName: WriteThrottleEvents
+    #     Namespace: AWS/DynamoDB
+    #     Period: 60
+    #     Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
+    #     Threshold: 0
+    #     TreatMissingData: notBreaching
