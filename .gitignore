@@ -67,3 +67,10 @@ typings/
 
 # serverless Directory
 .serverless/
+
+#Misc
+builds/
+.project
+.DS_Store
+*.swp
+mochawesome-report/
