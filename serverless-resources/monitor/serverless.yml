@@ -1,9 +1,9 @@
 # Service-specific monitoring resources.
 
 # Before deploying:
-# -update the first group of variables in the custom section
-# Removed Trying to Grab Service Name and Table Name from serverless.yml file
-# Since other options need to be Set anyway by hand.
+# - Edit 3 XXXX entries under custom section below
+# - Edit appropriate DynamoDB Index Monitoring sections, if a GSI exists
+
 service: 
   name: ${self:custom.serviceName}-Monitoring
 
@@ -95,7 +95,7 @@ resources:
         Namespace: AWS/ApiGateway
         Period: 60
         Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: .1
+        Threshold: .25
         TreatMissingData: notBreaching
     AlarmAPIGateway5XXCount:
       Type: 'AWS::CloudWatch::Alarm'
@@ -133,7 +133,7 @@ resources:
         Namespace: AWS/ApiGateway
         Period: 60
         Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: .1
+        Threshold: .25
         TreatMissingData: notBreaching
     AlarmAPIGatewayCount:
       Type: 'AWS::CloudWatch::Alarm'
