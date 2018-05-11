@@ -9,13 +9,13 @@
   "dependencies": {
     "aws-xray-sdk-core": "^1.2.0",
     "config": "^1.30.0",
-    "ns-aws-utils": "1.0.11"
+    "ns-aws-utils": "1.0.13"
   },
   "devDependencies": {
-    "aws-sdk": "^2.233.1",
+    "aws-sdk": "^2.238.1",
     "mocha": "^5.1.1",
     "mochawesome": "^3.0.2",
-    "nyc": "^11.7.1",
+    "nyc": "^11.7.3",
     "serverless": "^1.27.2",
     "serverless-domain-manager": "^2.3.6",
     "serverless-dynamodb-autoscaling": "^0.6.2",

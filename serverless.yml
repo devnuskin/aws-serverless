@@ -5,7 +5,7 @@ provider:
   name: aws
   runtime: nodejs8.10
   endpointType: regional
-  region: 'us-west-2'
+  region: ${opt:region, 'us-west-2'}
   stage: ${opt:stage, 'dev'}
   logRetentionInDays: 30
   tracing: true
