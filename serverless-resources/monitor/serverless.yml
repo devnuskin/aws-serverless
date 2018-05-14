@@ -40,9 +40,7 @@ resources:
               - '{"widgets": ['
               # API Gateway alarms (specific to an API)
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 4XX Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway4XXCount, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 4XX Error Rate", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway4XXErrorRate, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 5XX Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway5XXCount, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 5XX Error Rate", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway5XXErrorRate, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayCount, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Integration Latency", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayIntegrationLatency, Arn], '"]}}},']]
               # - 'Fn::Join': ['', ['{"type": "metric", "properties": {"view":"timeSeries","stacked":false,"metrics":[["AWS/ApiGateway","CacheHitCount","ApiName","${self:provider.stage}-Downtime","Stage","${self:provider.stage}",{"stat":"Sum","period":300}],[".","CacheMissCount",".",".",".",".",{"period":300,"stat":"Sum"}]],"period":300,"region":"${self:provider.region}","title":"API Gateway CacheHitCount, CacheMissCount"}},']]
@@ -78,25 +76,6 @@ resources:
         Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
         Threshold: 100
         TreatMissingData: notBreaching
-    AlarmAPIGateway4XXErrorRate:
-      Type: 'AWS::CloudWatch::Alarm'
-      Properties:
-        ActionsEnabled: true
-        AlarmActions:
-          - ${self:custom.topicArn}
-        AlarmDescription: ${self:custom.apiName} API Gateway 4XX Error Rate
-        AlarmName: ${self:custom.apiName}-apigateway-4xx-errorrate
-        ComparisonOperator: GreaterThanThreshold
-        Dimensions:
-          - Name: ApiName
-            Value: ${self:custom.apiName}
-        EvaluationPeriods: 1
-        MetricName: 4XXError
-        Namespace: AWS/ApiGateway
-        Period: 60
-        Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: .25
-        TreatMissingData: notBreaching
     AlarmAPIGateway5XXCount:
       Type: 'AWS::CloudWatch::Alarm'
       Properties:
@@ -115,25 +94,6 @@ resources:
         Period: 60
         Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
         Threshold: 100
-        TreatMissingData: notBreaching
-    AlarmAPIGateway5XXErrorRate:
-      Type: 'AWS::CloudWatch::Alarm'
-      Properties:
-        ActionsEnabled: true
-        AlarmActions:
-          - ${self:custom.topicArn}
-        AlarmDescription: ${self:custom.apiName} API Gateway 5XX Error Rate
-        AlarmName: ${self:custom.apiName}-apigateway-5xx-errorrate
-        ComparisonOperator: GreaterThanThreshold
-        Dimensions:
-          - Name: ApiName
-            Value: ${self:custom.apiName}
-        EvaluationPeriods: 1
-        MetricName: 5XXError
-        Namespace: AWS/ApiGateway
-        Period: 60
-        Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: .25
         TreatMissingData: notBreaching
     AlarmAPIGatewayCount:
       Type: 'AWS::CloudWatch::Alarm'
