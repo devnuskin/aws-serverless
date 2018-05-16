@@ -76,7 +76,7 @@ resources:
             ResourcePath: "/*"
             
 functions:
-  MicroService-sns:  #This is the name of your SNS Lambda Function  ***** PLEASE CHANGE
+  MicroServiceSNS:  #This is the name of your SNS Lambda Function  ***** PLEASE CHANGE
     handler: src/index.snsProductInfo
     events:
       - sns: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:MicroService   #This is the ARN of your SNS Topic  ***** PLEASE CHANGE LAST NAME
