@@ -2,8 +2,9 @@
 
 const app = require('./app');
 const nsAwsUtils = require("ns-aws-utils");
-const log = nsAwsUtils.logger;
 const cors = nsAwsUtils.cors;
+const log = nsAwsUtils.logger;
+const eidify = nsAwsUtils.eidify;
 
 /**
  * handler is a Lambda function.  The AWS Lambda service will invoke this function when a given event and runtime.
@@ -49,7 +50,21 @@ function handler(event, context, callback) {
     }
 }
 
+/**
+ * xrayHandler is a workaround function for solving a problem with xray not compatible with node8.
+ * https://github.com/aws/aws-xray-sdk-node/issues/27 (Rich has found out this problem)
+ *
+ * @param {object} event an event data is passed by AWS Lambda service
+ * @param {object} context a runtime information is passed by AWS Lambda service
+ * @param {function} callback a callback function
+ */
+function xrayHandler(event, context, callback) {
+  handler(event, context)
+      .then((res) => callback(null, res))
+      .catch((err) => callback(err));
+}
 
 module.exports = {
-    handler: cors(handler)
+  handler: cors(eidify(handler)),
+  xrayHandler: cors(eidify(xrayHandler))
 };

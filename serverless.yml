@@ -82,7 +82,7 @@ functions:
       - sns: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:MicroService   #This is the ARN of your SNS Topic  ***** PLEASE CHANGE LAST NAME
 
   MicroService: #This is the name of your Lambda Function  ***** PLEASE CHANGE
-    handler: src/index.handler
+    handler: src/index.xrayHandler
     events:
      - http:
         path: /{id}
@@ -173,12 +173,12 @@ custom:
       #########################################################################
       read:
         minimum: 5        # Minimum read capacity
-        maximum: 999      # Maximum read capacity
-        usage: 0.75       # Targeted usage percentage
+        maximum: 1000      # Maximum read capacity
+        usage: 0.50       # Targeted usage percentage
       write:
         minimum: 5        # Minimum write capacity
-        maximum: 999      # Maximum write capacity
-        usage:  0.75      # Targeted usage percentage
+        maximum: 900      # Maximum write capacity
+        usage:  0.50      # Targeted usage percentage
  
 plugins:
   - serverless-offline
