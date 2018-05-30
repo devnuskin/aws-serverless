@@ -7,6 +7,8 @@ provider:
   endpointType: regional
   region: ${opt:region, 'us-west-2'}
   stage: ${opt:stage, 'dev'}
+  memorySize: 512
+  timeout: 6
   logRetentionInDays: 30
   tracing: true
   basePath: 'item' #This is the path  ***** PLEASE SET
