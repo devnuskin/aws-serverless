@@ -195,13 +195,14 @@ package:
   exclude:
     - .idea/**
     - .nyc_output/**
-    - "*.iml"
-    - buildspec.yml
     - coverage/**
-    - LICENSE
+    - test/**
     - mochawesome-report/**
+    - serverless-resources/**
+    - "*.iml"
+    - LICENSE
     - qa-dashboard.sh
+    - buildspec.yml
     - README.md
     - swagger.yml
     - template.yml
-    - test/**
