@@ -188,7 +188,7 @@ resources:
         Namespace: AWS/Lambda
         Period: 60
         Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: 5000
+        Threshold: 28000
         TreatMissingData: notBreaching
     AlarmLambdaThrottles:
       Type: 'AWS::CloudWatch::Alarm'
