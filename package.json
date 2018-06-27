@@ -12,14 +12,12 @@
     "ns-aws-utils": "1.0.14"
   },
   "devDependencies": {
-    "aws-sdk": "^2.260.1",
+    "aws-sdk": "^2.264.1",
     "mocha": "^5.2.0",
     "mochawesome": "^3.0.2",
     "nyc": "^12.0.2",
     "serverless": "^1.27.3",
     "serverless-domain-manager": "^2.4.0",
-    "serverless-dynamodb-autoscaling": "^0.6.2",
-    "serverless-log-forwarding": "^1.1.6",
     "serverless-offline": "^3.25.4",
     "serverless-plugin-bind-deployment-id": "^1.0.1",
     "serverless-plugin-tracing": "^2.0.0",

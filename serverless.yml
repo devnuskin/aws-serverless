@@ -9,7 +9,7 @@ provider:
   stage: ${opt:stage, 'dev'}
   memorySize: 512
   timeout: 6
-  logRetentionInDays: 30
+  logRetentionInDays: 14
   tracing: true
   basePath: 'item' #This is the path  ***** PLEASE SET
   environment:
@@ -124,16 +124,10 @@ custom:
       endpointType: 'regional'
       createRoute53Record: false
 
-  ###Used for Automatically subscribing cloudwatch Lambda logs to ElasticSearch Service Lambda
-  logForwarding:
-    destinationARN: ${ssm:/global/logarn}
-    filterPattern: '[timestamp=*Z, request_id="*-*", event]'
-
 plugins:
   - serverless-offline
   - serverless-domain-manager
   - serverless-plugin-tracing
-  - serverless-log-forwarding
   - serverless-pseudo-parameters
   - serverless-prune-plugin
   - serverless-plugin-bind-deployment-id

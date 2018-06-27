@@ -21,7 +21,8 @@ custom:
   # the name of the DynamoDB table that will be monitored (assuming one DynamoDB table per service/API)
   tableName: XXXX
   # Topic ARN  -- Don't Change
-  topicArn: ${ssm:/global/monitoring-sns-arn}
+  monitoringArn: ${ssm:/global/monitoring-sns-arn}
+  opsArn: ${ssm:/global/ops-sns-arn}
   
   # the name of the service's API Gateway API that will be monitored
   apiName: ${self:provider.stage}-${self:custom.serviceName}
@@ -62,7 +63,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} API Gateway 4XX Count
         AlarmName: ${self:custom.apiName}-apigateway-4xx-count
         ComparisonOperator: GreaterThanThreshold
@@ -81,7 +87,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} API Gateway 5XX Count
         AlarmName: ${self:custom.apiName}-apigateway-5xx-count
         ComparisonOperator: GreaterThanThreshold
@@ -100,7 +111,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} API Gateway Count
         AlarmName: ${self:custom.apiName}-apigateway-count
         ComparisonOperator: GreaterThanThreshold
@@ -119,7 +135,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} API Gateway Integration Latency
         AlarmName: ${self:custom.apiName}-apigateway-integration-latency
         ComparisonOperator: GreaterThanThreshold
@@ -138,7 +159,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} Lambda Invocations
         AlarmName: ${self:custom.apiName}-lambda-invocations
         ComparisonOperator: GreaterThanThreshold
@@ -157,7 +183,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} Lambda Errors
         AlarmName: ${self:custom.apiName}-lambda-errors
         ComparisonOperator: GreaterThanThreshold
@@ -176,7 +207,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} Lambda Duration
         AlarmName: ${self:custom.apiName}-lambda-duration
         ComparisonOperator: GreaterThanThreshold
@@ -195,7 +231,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} Lambda Throttles
         AlarmName: ${self:custom.apiName}-lambda-throttles
         ComparisonOperator: GreaterThanThreshold
@@ -217,7 +258,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} DynamoDB Read Throttle Events
         AlarmName: ${self:custom.apiName}-dynamodb-read-throttle-events
         ComparisonOperator: GreaterThanThreshold
@@ -236,7 +282,12 @@ resources:
       Properties:
         ActionsEnabled: true
         AlarmActions:
-          - ${self:custom.topicArn}
+          - ${self:custom.opsArn}
+          - ${self:custom.monitoringArn}
+        OKActions:
+          - ${self:custom.opsArn}
+        InsufficientDataActions:
+          - ${self:custom.opsArn}
         AlarmDescription: ${self:custom.apiName} DynamoDB Write Throttle Events
         AlarmName: ${self:custom.apiName}-dynamodb-write-throttle-events
         ComparisonOperator: GreaterThanThreshold
