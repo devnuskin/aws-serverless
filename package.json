@@ -12,12 +12,12 @@
     "ns-aws-utils": "1.0.14"
   },
   "devDependencies": {
-    "aws-sdk": "^2.267.1",
+    "aws-sdk": "^2.268.1",
     "aws-mock": "^1.3.0",
     "mocha": "^5.2.0",
     "mochawesome": "^3.0.2",
     "nyc": "^12.0.2",
-    "serverless": "^1.27.3",
+    "serverless": "^1.28.0",
     "serverless-domain-manager": "^2.4.0",
     "serverless-offline": "^3.25.5",
     "serverless-plugin-bind-deployment-id": "^1.0.1",
