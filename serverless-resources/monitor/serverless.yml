@@ -247,7 +247,7 @@ resources:
         MetricName: Throttles
         Namespace: AWS/Lambda
         Period: 60
-        Statistic: SampleCount #SampleCount, Average, Sum, Minimum, or Maximum
+        Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
         Threshold: 0
         TreatMissingData: notBreaching
     ######################################################################################
