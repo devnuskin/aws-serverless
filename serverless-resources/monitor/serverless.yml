@@ -133,7 +133,7 @@ resources:
     AlarmAPIGatewayIntegrationLatency:
       Type: 'AWS::CloudWatch::Alarm'
       Properties:
-        ActionsEnabled: true
+        ActionsEnabled: false
         AlarmActions:
           - ${self:custom.opsArn}
           - ${self:custom.monitoringArn}
