@@ -43,7 +43,6 @@ resources:
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 4XX Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway4XXCount, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway 5XX Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGateway5XXCount, Arn], '"]}}},']]
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayCount, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Integration Latency", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayIntegrationLatency, Arn], '"]}}},']]
               # - 'Fn::Join': ['', ['{"type": "metric", "properties": {"view":"timeSeries","stacked":false,"metrics":[["AWS/ApiGateway","CacheHitCount","ApiName","${self:provider.stage}-Downtime","Stage","${self:provider.stage}",{"stat":"Sum","period":300}],[".","CacheMissCount",".",".",".",".",{"period":300,"stat":"Sum"}]],"period":300,"region":"${self:provider.region}","title":"API Gateway CacheHitCount, CacheMissCount"}},']]
               # Lambda alarms (specific to a function)
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Invocations", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaInvocations, Arn], '"]}}},']]
@@ -129,30 +128,6 @@ resources:
         Period: 60
         Statistic: SampleCount #SampleCount, Average, Sum, Minimum, or Maximum
         Threshold: 300000
-        TreatMissingData: notBreaching
-    AlarmAPIGatewayIntegrationLatency:
-      Type: 'AWS::CloudWatch::Alarm'
-      Properties:
-        ActionsEnabled: false
-        AlarmActions:
-          - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
-        OKActions:
-          - ${self:custom.opsArn}
-        InsufficientDataActions:
-          - ${self:custom.opsArn}
-        AlarmDescription: ${self:custom.apiName} API Gateway Integration Latency
-        AlarmName: ${self:custom.apiName}-apigateway-integration-latency
-        ComparisonOperator: GreaterThanThreshold
-        Dimensions:
-          - Name: ApiName
-            Value: ${self:custom.apiName}
-        EvaluationPeriods: 3
-        MetricName: IntegrationLatency
-        Namespace: AWS/ApiGateway
-        Period: 60
-        Statistic: Average #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: 5000
         TreatMissingData: notBreaching
     AlarmLambdaInvocations:
       Type: 'AWS::CloudWatch::Alarm'
