@@ -134,6 +134,7 @@ plugins:
 
 package:
   exclude:
+    - node_modules/aws-sdk/**
     - .idea/**
     - .nyc_output/**
     - coverage/**
