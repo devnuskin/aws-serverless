@@ -1,10 +1,11 @@
 'use strict';
 
 const app = require('./app');
-const nsAwsUtils = require("ns-aws-utils");
+const nsAwsUtils = require('ns-aws-utils');
 const cors = nsAwsUtils.cors;
 const log = nsAwsUtils.logger;
 const eidify = nsAwsUtils.eidify;
+log.setLevel(process.env.LOG_LEVEL);
 
 /**
  * handler is a Lambda function.  The AWS Lambda service will invoke this function when a given event and runtime.
@@ -27,23 +28,23 @@ function handler(event, context, callback) {
 
     if (event) {
         switch (event.httpMethod) {
-            case 'POST':
-                app.post(JSON.parse(event.body))
-                    .then((data) => { done(null, data)})
-                    .catch((err) => { done({"message": err}, null)});
-                break;
-            case 'GET':
-                app.get(event.pathParameters.id, event.queryStringParameters.sortKey)
-                    .then((data) => { done(null, data)})
-                    .catch((err) => { done({"message": err}, null)});
-                break;
-            case 'DELETE':
-                app.remove(event.pathParameters.id, event.queryStringParameters.sortKey)
-                    .then((skus) => { done(null, data)})
-                    .catch((err) => { done({"message": err}, null)});
-                break;
-            default:
-                done(new Error(`Unsupported method "${event.httpMethod}"`));
+        case 'POST':
+            app.post(JSON.parse(event.body))
+                .then((data) => { done(null, data)})
+                .catch((err) => { done({'message': err}, null)});
+            break;
+        case 'GET':
+            app.get(event.pathParameters.id, event.queryStringParameters.sortKey)
+                .then((data) => { done(null, data)})
+                .catch((err) => { done({'message': err}, null)});
+            break;
+        case 'DELETE':
+            app.remove(event.pathParameters.id, event.queryStringParameters.sortKey)
+                .then((skus) => { done(null, data)})
+                .catch((err) => { done({'message': err}, null)});
+            break;
+        default:
+            done(new Error(`Unsupported method "${event.httpMethod}"`));
         }
     } else {
         done(new Error(`Invalid Event "${event}"`));
@@ -59,12 +60,12 @@ function handler(event, context, callback) {
  * @param {function} callback a callback function
  */
 function xrayHandler(event, context, callback) {
-  handler(event, context)
-      .then((res) => callback(null, res))
-      .catch((err) => callback(err));
+    handler(event, context)
+        .then((res) => callback(null, res))
+        .catch((err) => callback(err));
 }
 
 module.exports = {
-  handler: cors(eidify(handler)),
-  xrayHandler: cors(eidify(xrayHandler))
+    handler: cors(eidify(handler)),
+    xrayHandler: cors(eidify(xrayHandler))
 };

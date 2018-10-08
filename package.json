@@ -9,17 +9,17 @@
   "dependencies": {
     "aws-xray-sdk-core": "^2.0.0",
     "config": "^2.0.1",
-    "ns-aws-utils": "1.0.20"
+    "ns-aws-utils": "1.0.21"
   },
   "devDependencies": {
     "aws-mock": "^1.3.0",
-    "aws-sdk": "^2.321.0",
+    "aws-sdk": "^2.329.0",
     "mocha": "^5.2.0",
     "mochawesome": "^3.0.3",
     "nyc": "^13.0.1",
     "serverless": "^1.32.0",
     "serverless-domain-manager": "^2.6.5",
-    "serverless-offline": "^3.25.14",
+    "serverless-offline": "^3.27.0",
     "serverless-plugin-bind-deployment-id": "^1.0.1",
     "serverless-plugin-tracing": "^2.0.0",
     "serverless-prune-plugin": "^1.3.1",

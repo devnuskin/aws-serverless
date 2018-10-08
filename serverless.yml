@@ -16,6 +16,7 @@ provider:
     AWS_XRAY_CONTEXT_MISSING: LOG_ERROR
     NODE_ENV: ${opt:stage, 'dev'}
     TABLE: 'Items'  #This is the DyanmoDB Table name  ***** PLEASE SET
+    LOG_LEVEL: 'debug'
   deploymentBucket:
     name: ${self:provider.stage}-${self:provider.region}-nuskin-sls
 
