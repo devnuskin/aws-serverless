@@ -21,7 +21,6 @@ custom:
   # the name of the DynamoDB table that will be monitored (assuming one DynamoDB table per service/API)
   tableName: XXXX
   # Topic ARN  -- Don't Change
-  monitoringArn: ${ssm:/global/monitoring-sns-arn}
   opsArn: ${ssm:/global/ops-sns-arn}
   
   # the name of the service's API Gateway API that will be monitored
@@ -45,17 +44,17 @@ resources:
               - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "API Gateway Count", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmAPIGatewayCount, Arn], '"]}}},']]
               # - 'Fn::Join': ['', ['{"type": "metric", "properties": {"view":"timeSeries","stacked":false,"metrics":[["AWS/ApiGateway","CacheHitCount","ApiName","${self:provider.stage}-Downtime","Stage","${self:provider.stage}",{"stat":"Sum","period":300}],[".","CacheMissCount",".",".",".",".",{"period":300,"stat":"Sum"}]],"period":300,"region":"${self:provider.region}","title":"API Gateway CacheHitCount, CacheMissCount"}},']]
               # Lambda alarms (specific to a function)
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Invocations", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaInvocations, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Errors", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaErrors, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Duration", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaDuration, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "Lambda Throttles", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaThrottles, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.functionName} Lambda Invocations", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaInvocations, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.functionName} Lambda Errors", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaErrors, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.functionName} Lambda Duration", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaDuration, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.functionName} Lambda Throttles", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmLambdaThrottles, Arn], '"]}}},']]
               # DynamoDB Table and GlobalSecondary Index Widgets (specific to a table and index)
               # Uncomment and Change to Correct Labels
-              #- 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "XXXX-index DynamoDB Read Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBReadThrottleEventsXXXX, Arn], '"]}}},']]
-              #- 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "XXXX-index DynamoDB Write Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBWriteThrottleEventsXXXX, Arn], '"]}}},']]
+              #- 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.tableName} XXXX-index DynamoDB Read Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBReadThrottleEventsXXXX, Arn], '"]}}},']]
+              #- 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.tableName} XXXX-index DynamoDB Write Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBWriteThrottleEventsXXXX, Arn], '"]}}},']]
               # DynamoDB Table Widgets (specific to a table)
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Read Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBReadThrottleEvents, Arn], '"]}}},']]
-              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "DynamoDB Write Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBWriteThrottleEvents, Arn], '"]}}}']] #this last one won't have a trailing comma
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.tableName} DynamoDB Read Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBReadThrottleEvents, Arn], '"]}}},']]
+              - 'Fn::Join': ['', ['{"type": "metric", "properties": {"title": "${self:custom.tableName} DynamoDB Write Throttle Events", "annotations": {"alarms": ["', Fn::GetAtt: [AlarmDynamoDBWriteThrottleEvents, Arn], '"]}}}']] #this last one won't have a trailing comma
               - ']}'
     AlarmAPIGateway4XXCount:
       Type: 'AWS::CloudWatch::Alarm'
@@ -63,7 +62,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -87,7 +85,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -111,7 +108,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -135,7 +131,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -151,7 +146,7 @@ resources:
         Namespace: AWS/Lambda
         Period: 60
         Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: 1000
+        Threshold: 5000
         TreatMissingData: notBreaching
     AlarmLambdaErrors:
       Type: 'AWS::CloudWatch::Alarm'
@@ -159,7 +154,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -175,7 +169,7 @@ resources:
         Namespace: AWS/Lambda
         Period: 60
         Statistic: Sum #SampleCount, Average, Sum, Minimum, or Maximum
-        Threshold: 10
+        Threshold: 100
         TreatMissingData: notBreaching
     AlarmLambdaDuration:
       Type: 'AWS::CloudWatch::Alarm'
@@ -183,7 +177,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -207,7 +200,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -234,7 +226,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
@@ -258,7 +249,6 @@ resources:
         ActionsEnabled: true
         AlarmActions:
           - ${self:custom.opsArn}
-          - ${self:custom.monitoringArn}
         OKActions:
           - ${self:custom.opsArn}
         InsufficientDataActions:
