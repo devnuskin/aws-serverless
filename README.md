@@ -53,7 +53,15 @@ git init
 git add .
 git commit -m "Initial Commit"
 git remote add origin ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/{service-name}
-git push -u origin master
+  ```
+  **Login to the AWS Console and go to Service Catalog:**  
+
+  Follow instructions in Confluence to create the Code Commit Repo and Serverless Pipeline Deployment.  
+  https://confluence.nuskin.com/pages/viewpage.action?pageId=27904561
+
+  Then push your code to Code Commit:
+  ```bash
+  git push -u origin master
   ```
 
 #### 7. Environment Configuration in config/ directory
