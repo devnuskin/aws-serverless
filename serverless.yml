@@ -61,7 +61,7 @@ functions:
     events:
       - sns: arn:aws:sns:${self:provider.region}:#{AWS::AccountId}:MicroService   #This is the ARN of your SNS Topic  ***** PLEASE CHANGE LAST NAME
 
-  MicroService: #This is the name of your Lambda Function  ***** PLEASE CHANGE
+  MicroServiceHTTP:  #This is the name of your Lambda Function  ***** PLEASE CHANGE
     handler: src/index.xrayHandler
     events:
      - http:
