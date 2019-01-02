@@ -1,5 +1,5 @@
 service: 
-  name: ItemService
+  name:  ItemService    # NOTE: update this with your service name
 
 provider:
   name: aws

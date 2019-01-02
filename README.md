@@ -21,10 +21,16 @@ For details on where to get your access_key and secret [click here](https://docs
 #### 3. Create a service:
   ```bash
   # Create a service from a template using your own <Service Name>
-  serverless create -u https://github.com/devnuskin/aws-serverless --name myservice --path myservice
+  serverless create -u https://github.com/devnuskin/aws-serverless --path myservice
+```
+#### 4. Install npm modules from package.json:
+  ```bash
+  # use path from above
+  cd myservice
+  npm install
 ```
 
-#### 4. Start your service locally:
+#### 5. Start your service locally:
   ```bash
   serverless offline start
 ```
@@ -37,7 +43,7 @@ A Postman collection is available in the src/resources folder.
 
 Customize your service to meet your needs including setting the Service name and The Base path in the serverless.yml file
 
-#### 5. To deploy to dev
+#### 6. To deploy to dev
 
   ```bash
   serverless deploy
@@ -45,7 +51,7 @@ Customize your service to meet your needs including setting the Service name and
 
 Your service will be available at https://devapi.cloud.nuskin.com/myservice
 
-#### 6. To add to CI/CD
+#### 7. To add to CI/CD
 
  **Create Git Repo and set origin:**
   ```bash
@@ -64,7 +70,7 @@ git remote add origin ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/{ser
   git push -u origin master
   ```
 
-#### 7. Environment Configuration in config/ directory
+#### 8. Environment Configuration in config/ directory
 There are environmental files are in the config/ directory.  
 
 Make sure you understand load order and don't have blank values in child files as they will overwrite default values.
