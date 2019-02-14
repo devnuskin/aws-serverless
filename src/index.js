@@ -13,43 +13,117 @@ log.setLevel(process.env.LOG_LEVEL);
  * minutes then finish.   That means we need to pay for the full five minutes processing time.
  *
  * @param {Object} event an event data is passed by AWS Lambda service
- * @param {Object} context a runtime information is passed by AWS Lambda service
- * @param {callback} callback a callback function
  */
-function handler(event, context, callback) {
+async function handler(event) {
+    log.setTag(); // clear previous tags
+    log.info({event: event});
+    let response = {};
 
-    const done = (err, res) => callback(null, {
-        statusCode: err ? '400' : '200',
-        body: err ? err.message : JSON.stringify(res),
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    });
+    // process HTTP traffic
+    if (event.httpMethod) {
+        response = await cors(eidify(processHTTP))(event);
 
-    if (event) {
-        switch (event.httpMethod) {
-        case 'POST':
-            app.post(JSON.parse(event.body))
-                .then((data) => { done(null, data)})
-                .catch((err) => { done({'message': err}, null)});
-            break;
-        case 'GET':
-            app.get(event.pathParameters.id, event.queryStringParameters.sortKey)
-                .then((data) => { done(null, data)})
-                .catch((err) => { done({'message': err}, null)});
-            break;
-        case 'DELETE':
-            app.remove(event.pathParameters.id, event.queryStringParameters.sortKey)
-                .then((skus) => { done(null, data)})
-                .catch((err) => { done({'message': err}, null)});
-            break;
-        default:
-            done(new Error(`Unsupported method "${event.httpMethod}"`));
-        }
-    } else {
-        done(new Error(`Invalid Event "${event}"`));
+    } else if (event.Records) { // process SNS traffic
+        await processEventRecords(event);
+
+    } else { // process lambda traffic
+        response = await app.get(event);
     }
+
+    log.info({response: response});
+    return response;
+
 }
+
+/**
+ * Processes HTTP request to GET, POST, PUT, and DELETE paymentProfile records.
+ *
+ * @param event
+ * @return {Promise.<void>}
+ */
+async function processHTTP(event) {
+    let response = {};
+
+    try {
+        switch (event.httpMethod) {
+            case 'PUT':
+            case 'POST':
+                let body = JSON.parse(event.body);
+                response = await app.put(body);
+                break;
+            case 'GET':
+                response = await app.get(event.pathParameters.accountId);
+                break;
+            case 'DELETE':
+                response = await app.remove(event.pathParameters.accountId);
+                break;
+            default:
+                throw {status: 405, message: `httpMethod: ${event.httpMethod} is not supported`};
+        }
+        response = formatResponse(response);
+
+    } catch (error) {
+        log.error(err);
+        response = formatErrorResponse(err.status || 400, [await msg.error(err.stringName || 'unknown', err.message)]);
+    }
+
+    return response;
+}
+
+
+/**
+ * Processes SNS messages that will CREATE/UPDATE productInventory records
+ *
+ * @param event
+ */
+async function processEventRecords(event) {
+    event.Records.forEach((record) => {
+        //todo: implementation
+    })
+}
+
+
+/**
+ * getResponse - builds a response base on data passed back from the app code.
+ *
+ * @param {Object} response - contains: status code, array of messages, and list of payments
+ * @return {{statusCode: *, body}}
+ */
+function formatResponse(response) {
+    return {
+        statusCode: 200,
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            status: 200,
+            messages: [],
+            data: response
+        })
+    };
+}
+
+
+/**
+ * Builds an error response object.
+ *
+ * @param {string} status
+ * @param {string} messages
+ * @return {Object}
+ */
+function formatErrorResponse(status, messages) {
+    return {
+        statusCode: status,
+        body: JSON.stringify({
+            status: status,
+            messages: messages
+        }),
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+}
+
 
 /**
  * xrayHandler is a workaround function for solving a problem with xray not compatible with node8.
@@ -66,6 +140,6 @@ function xrayHandler(event, context, callback) {
 }
 
 module.exports = {
-    handler: cors(eidify(handler)),
-    xrayHandler: cors(eidify(xrayHandler))
+    handler: handler,
+    xrayHandler: xrayHandler
 };
