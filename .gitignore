@@ -25,6 +25,10 @@ lib-cov
 # Coverage directory used by tools like istanbul
 coverage
 
+# Sonar directory used by the scanner
+.scannerwork
+.sonarlint
+
 # nyc test coverage
 .nyc_output
 

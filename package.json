@@ -4,7 +4,11 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "test": "nyc --reporter=html --reporter=text --check-coverage --lines 80 --functions 90 --branches 50 mocha --reporter=mochawesome --timeout 5000"
+    "pre-build": "chmod +x ./scripts/pre-build.sh && ./scripts/pre-build.sh",
+    "build": "chmod +x ./scripts/build.sh && ./scripts/build.sh",
+    "post-build": "chmod +x ./scripts/post-build.sh && ./scripts/post-build.sh",
+    "test": "chmod +x ./scripts/test.sh && ./scripts/test.sh",
+    "deploy": "chmod +x ./scripts/deploy.sh && ./scripts/deploy.sh"
   },
   "dependencies": {
     "aws-xray-sdk-core": "^2.1.0",

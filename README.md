@@ -46,7 +46,7 @@ Customize your service to meet your needs including setting the Service name and
 #### 6. To deploy to dev
 
   ```bash
-  serverless deploy
+  npm deploy
 ```
 
 Your service will be available at https://devapi.cloud.nuskin.com/myservice
