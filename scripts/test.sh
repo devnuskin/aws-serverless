@@ -20,9 +20,9 @@ do
             *)   
     esac    
 done
-echo "---------------------"
+echo "--------------------------------"
 echo "|Starting Mocha/Instambul Tests|"
-echo "---------------------"
+echo "--------------------------------"
 nyc --reporter=html --reporter=text --check-coverage --lines 80 --functions 90 --branches 50 mocha --reporter=mochawesome --timeout 5000
 echo "-----------------"
 echo "|Report to Sonar|"
