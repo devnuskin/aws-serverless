@@ -74,3 +74,4 @@ builds/
 .DS_Store
 *.swp
 mochawesome-report/
+package-lock.json

@@ -1,39 +1,46 @@
 {
-  "version": "0.2.0",
-  "configurations": [
-   {
-    "name": "Debug",
-    "type": "node",
-    "request": "launch",
-    "cwd": "${workspaceRoot}",
-    "runtimeExecutable": "node",
-    "runtimeArgs": [
-     "--debug-brk",
-     "--inspect",
-     "node_modules/serverless/bin/serverless",
-     "offline"
-    ],
-    "skipFiles": [
-      "${workspaceRoot}/node_modules/async/**",
-      "${workspaceRoot}/node_modules/bluebird/**",
-      "${workspaceRoot}/node_modules/asynckit/**",
-      "${workspaceRoot}/node_modules/async-listener/**",
-      "${workspaceRoot}/node_modules/serverless**",
-      "${workspaceRoot}/node_modules/continuation-local-storage/**",
-      "${workspaceRoot}/node_modules/hapi/**",
-      "${workspaceRoot}/node_modules/items/**",
-      "${workspaceRoot}/node_modules/aws-sdk/**",
-      "${workspaceRoot}/node_modules/hoek/**",
-      "${workspaceRoot}/node_modules/lodash/**",
-      "${workspaceRoot}/node_modules/chalk/**",
-      "${workspaceRoot}/node_modules/mimos/**",
-      "${workspaceRoot}/node_modules/hapi-cors-headers/**",
-      "${workspaceRoot}/node_modules/shot/**",
-      "${workspaceRoot}/node_modules/ns-aws-utils/src/logger.js",
-      "${workspaceRoot}/node_modules/ns-aws-utils/src/scrubber.js",
-      "<node_internals>/**/*.js"
-    ],
-    "port": 9229
-   }
-  ]
- }
+    "version": "0.2.0",
+    "configurations": [{
+        "name": "Debug",
+        "type": "node",
+        "request": "launch",
+        "cwd": "${workspaceRoot}",
+        "runtimeExecutable": "node",
+        "runtimeArgs": [
+            "--debug-brk",
+            "--inspect",
+            "node_modules/serverless/bin/serverless",
+            "offline",
+            "start",
+            "--skipCacheInvalidation",
+            "--stage",
+            "dev"
+        ],
+        "env": {
+            "SLS_DEBUG": "*",
+            "AWS_PROFILE": "dev",
+            "AWS_ACCOUNT": "140547422257"
+        },
+        "skipFiles": [
+            "${workspaceRoot}/node_modules/async/**",
+            "${workspaceRoot}/node_modules/bluebird/**",
+            "${workspaceRoot}/node_modules/asynckit/**",
+            "${workspaceRoot}/node_modules/async-listener/**",
+            "${workspaceRoot}/node_modules/serverless**",
+            "${workspaceRoot}/node_modules/continuation-local-storage/**",
+            "${workspaceRoot}/node_modules/hapi/**",
+            "${workspaceRoot}/node_modules/items/**",
+            "${workspaceRoot}/node_modules/aws-sdk/**",
+            "${workspaceRoot}/node_modules/hoek/**",
+            "${workspaceRoot}/node_modules/lodash/**",
+            "${workspaceRoot}/node_modules/chalk/**",
+            "${workspaceRoot}/node_modules/mimos/**",
+            "${workspaceRoot}/node_modules/hapi-cors-headers/**",
+            "${workspaceRoot}/node_modules/shot/**",
+            "${workspaceRoot}/node_modules/ns-aws-utils/src/logger.js",
+            "${workspaceRoot}/node_modules/ns-aws-utils/src/scrubber.js",
+            "<node_internals>/**/*.js"
+        ],
+        "port": 9229
+    }]
+}

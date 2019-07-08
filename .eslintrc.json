@@ -1,0 +1,22 @@
+{
+	"env": {
+		"es6": true,
+		"node": true,
+		"mocha": true
+	},
+	"extends": "google",
+	"parserOptions": {
+		"ecmaVersion": 2018,
+		"sourceType": "module"
+	},
+	"plugins": [ "json" ],
+	"rules": {
+		"indent": [ "error", 4, { "SwitchCase": 1 } ],
+		"space-in-parens": [ "warn", "never" ],
+		"max-len": [ "warn", 120 ],
+		"no-var": "off",
+		"no-console": "warn",
+		"no-invalid-this": "warn",
+		"comma-dangle": [ "error", "never" ]
+	}
+}

@@ -1,0 +1,7 @@
+.nyc_output/**
+.serverless/**
+.vscode/**
+coverage/**
+mochawesome-report/**
+node_modules/**
+serverless-resources/**
