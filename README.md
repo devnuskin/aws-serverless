@@ -52,20 +52,14 @@ Customize your service to meet your needs including setting the Service name and
 Your service will be available at https://devapi.cloud.nuskin.com/myservice
 
 #### 7. To add to CI/CD
-
- **Create Git Repo and set origin:**
-  ```bash
-git init
-git add .
-git commit -m "Initial Commit"
-git remote add origin ssh://git-codecommit.us-west-2.amazonaws.com/v1/repos/{service-name}
-  ```
   **Login to the AWS Console and go to Service Catalog:**  
 
   Follow instructions in Confluence to create the Code Commit Repo and Serverless Pipeline Deployment.  
   https://confluence.nuskin.com/pages/viewpage.action?pageId=27904561
 
-  Then push your code to Code Commit:
+  - Clone the newly created repository to a local working repository
+  - Move or Copy your project into the new working repository (**TODO: _copy actual commands and add them to this documentation_**)
+  - Push your code to Code Commit:
   ```bash
   git push -u origin master
   ```
