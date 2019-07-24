@@ -36,6 +36,14 @@ provider:
       Resource:
         - "*"
 
+# Sample of permission for lambda->lambda
+#    - Effect: Allow
+#      Action:
+#        - lambda:InvokeFunction
+#      Resource: "arn:aws:lambda:${self:provider.region}:*:function:LambdaService-${self:provider.stage}-LambdaFunction"
+
+
+
 resources:
   Resources:
     ##############################################

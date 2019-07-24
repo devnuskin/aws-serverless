@@ -1,7 +1,5 @@
 {
-  "NS_SERVICE":{
-    "client_id":"",
-    "client_secret":"",
-    "url":""
-  }
+    "properties": {
+        "awsBase": "https://devapi.cloud.nuskin.com"
+    }
 }
