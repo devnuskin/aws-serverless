@@ -8,8 +8,8 @@
     },
     "dependencies": {
         "aws-xray-sdk-core": "^2.3.4",
-        "config": "^3.0.1",
-        "ns-aws-utils": "^1.0.26"
+        "config": "^3.3.8",
+        "ns-aws-utils": "^1.6.1"
     },
     "devDependencies": {
         "@types/aws-lambda": "^8.10.27",
